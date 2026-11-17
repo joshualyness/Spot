@@ -43,18 +43,19 @@ npm run dev:app
 
 Copy `app/.env.example` → `app/.env` (`EXPO_PUBLIC_LOCAL_USER_ID` + optional `EXPO_PUBLIC_API_URL`).
 
-## Deploy (when credentials are ready)
+## Deploy (joshualyness / eu-west-1)
 
-1. Copy `api/.env.example` → `api/.env.dev` and fill `AWS_DEPLOYMENT_ACCOUNT_ID`, profile/role, and update `api/app-config.yml` (domain + hosted zone) and Cognito SES `mail_domain` in `api/infra/global/cognito/locals.tf`.
-2. Ensure the Terraform state bucket/lock table naming matches your account bootstrap.
-3. Deploy in order:
+Uses the same AWS profile as `Sites/ninety-two` (`joshualyness`, account `699764791980`), region `eu-west-1`.
 
 ```bash
 cd api
+# api/.env.dev already points at joshualyness / eu-west-1
 npm run build
 npm run apply:dynamo:dev
 npm run apply:cognito:dev
 npm run apply:api:dev
 ```
 
-Nothing has been deployed from this scaffold yet.
+Dev API (current): `https://2jjufwba90.execute-api.eu-west-1.amazonaws.com/trpc`
+
+Custom domain / SES custom email sender are deferred — Cognito uses `COGNITO_DEFAULT` email until an SES identity is attached.

@@ -16,12 +16,14 @@ locals {
   trpc_lambda_env = {
     DYNAMODB_TABLE_NAME = var.dynamodb_table_name
     USER_POOL_ID        = var.cognito_user_pool_id
+    ISSUER_URL          = var.cognito_domain_idp_url
+    JKWS_URI            = "${var.cognito_domain_idp_url}/.well-known/jwks.json"
     APP_LINK_BASE       = "spot://"
   }
 }
 
 resource "aws_lambda_function" "trpc" {
-  function_name    = "trpc-${var.environment_name}"
+  function_name    = "spot-trpc-${var.environment_name}"
   role             = aws_iam_role.trpc_lambda_role.arn
   runtime          = "nodejs24.x"
   handler          = "index.handler"
@@ -36,7 +38,7 @@ resource "aws_lambda_function" "trpc" {
 }
 
 resource "aws_lambda_function" "api_authorizer" {
-  function_name = "authorizer-${var.environment_name}"
+  function_name = "spot-authorizer-${var.environment_name}"
   role          = aws_iam_role.authorizer_lambda_exec.arn
   runtime       = "nodejs24.x"
   handler       = "index.handler"

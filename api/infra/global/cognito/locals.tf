@@ -1,7 +1,7 @@
 locals {
-  # Placeholder SES identity — verify in SES (eu-west-2) before deploy
-  mail_domain    = "example.com"
-  ses_from_email = "Spot <noreply@example.com>"
+  # Cognito uses COGNITO_DEFAULT email until an SES identity is verified in this account/region.
+  # Custom email-sender Lambda remains deployed for later SES wiring.
+  ses_from_email = "Spot <noreply@spot.local>"
 
   email_sender_lambda_name = "email-sender-${var.environment_name}"
   email_queue_name         = "email-queue-${var.environment_name}"

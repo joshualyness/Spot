@@ -295,10 +295,8 @@ resource "aws_iam_policy" "email_sender_policy" {
           "ses:SendEmail",
           "ses:SendRawEmail"
         ]
-        Resource = [
-          data.aws_ses_domain_identity.mail.arn,
-          "arn:aws:ses:${var.aws_region}:${data.aws_caller_identity.current.account_id}:identity/${local.mail_domain}"
-        ]
+        # Broad until a verified SES identity/domain is attached for Spot.
+        Resource = "*"
       },
       {
         Effect = "Allow"

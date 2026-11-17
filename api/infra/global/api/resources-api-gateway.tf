@@ -1,20 +1,12 @@
-resource "aws_apigatewayv2_domain_name" "custom_domain" {
-  domain_name = local.domain_name
-
-  domain_name_configuration {
-    security_policy = "TLS_1_2"
-    endpoint_type   = "REGIONAL"
-    certificate_arn = aws_acm_certificate.api_certificate.arn
-  }
-
-  depends_on = [
-    aws_acm_certificate_validation.api_certificate_validation_wait
-  ]
-}
-
 resource "aws_apigatewayv2_api" "api" {
   name          = "api-${var.environment_name}"
   protocol_type = "HTTP"
+
+  cors_configuration {
+    allow_headers = ["authorization", "content-type"]
+    allow_methods = ["GET", "POST", "OPTIONS"]
+    allow_origins = ["*"]
+  }
 }
 
 resource "aws_apigatewayv2_stage" "default" {
@@ -35,18 +27,9 @@ resource "aws_apigatewayv2_stage" "default" {
       responseLength  = "$context.responseLength",
       errorMessage    = "$context.error.message",
       errorType       = "$context.error.responseType",
-      authorizerError = "$context.authorizer.error",
-      jwtSub          = "$context.authorizer.claims.sub",
-      jwtIssuer       = "$context.authorizer.claims.iss",
-      jwtAudience     = "$context.authorizer.claims.aud"
+      authorizerError = "$context.authorizer.error"
     })
   }
-}
-
-resource "aws_apigatewayv2_api_mapping" "custom_mapping" {
-  domain_name = aws_apigatewayv2_domain_name.custom_domain.domain_name
-  api_id      = aws_apigatewayv2_api.api.id
-  stage       = aws_apigatewayv2_stage.default.name
 }
 
 resource "aws_apigatewayv2_integration" "trpc" {
@@ -97,6 +80,6 @@ resource "aws_lambda_permission" "api_gateway_authorizer_permission" {
 }
 
 resource "aws_cloudwatch_log_group" "api_access_logs" {
-  name              = "/aws/apigateway/${var.environment_name}-access-logs"
+  name              = "/aws/apigateway/spot-${var.environment_name}-access-logs"
   retention_in_days = 7
 }

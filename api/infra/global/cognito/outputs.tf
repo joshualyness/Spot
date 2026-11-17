@@ -35,16 +35,11 @@ output "email_queue_arn" {
 }
 
 output "ses_from_email" {
-  description = "From address used for Cognito and app emails"
+  description = "From address placeholder for future SES custom email sender"
   value       = local.ses_from_email
 }
 
-output "mail_domain" {
-  description = "SES verified mail domain"
-  value       = local.mail_domain
-}
-
 output "cognito_email_kms_key_arn" {
-  description = "KMS key ARN used to encrypt Cognito custom email sender codes"
+  description = "KMS key ARN reserved for Cognito custom email sender codes"
   value       = aws_kms_key.cognito_email.arn
 }
