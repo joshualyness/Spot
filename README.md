@@ -18,13 +18,22 @@ Monorepo for the Spot mobile app and API.
 npm install
 ```
 
+## Auth model
+
+1. Client sends Cognito **access token**: `Authorization: Bearer <token>`.
+2. tRPC `createContext` verifies the JWT (JWKS) and resolves Spot `userId` from Cognito `custom:id`.
+3. `protectedProcedure` rejects unauthenticated calls.
+4. `user.get` / `user.update` / `user.delete` **always** use `ctx.userId` — there is no `userId` input, so you can only touch the signed-in user.
+
+Local pre-Cognito bypass (API sets `ALLOW_LOCAL_AUTH=true`): `Authorization: Bearer local:<userId>`.
+
 ## Local API (tRPC)
 
 ```bash
 npm run dev:api
 ```
 
-Serves `http://localhost:4000/trpc`. The Expo app calls `user.demo` and displays first/last name.
+Serves `http://localhost:4000/trpc`.
 
 ## Expo app
 
@@ -32,7 +41,7 @@ Serves `http://localhost:4000/trpc`. The Expo app calls `user.demo` and displays
 npm run dev:app
 ```
 
-Optional: set `EXPO_PUBLIC_API_URL` in `app/.env` (see `app/.env.example`).
+Copy `app/.env.example` → `app/.env` (`EXPO_PUBLIC_LOCAL_USER_ID` + optional `EXPO_PUBLIC_API_URL`).
 
 ## Deploy (when credentials are ready)
 

@@ -5,7 +5,7 @@ import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import { createTrpcClient, trpc } from './lib/trpc'
 
 function UserName() {
-  const { data, isLoading, error } = trpc.user.demo.useQuery()
+  const { data, isLoading, error } = trpc.user.get.useQuery()
 
   if (isLoading) {
     return <ActivityIndicator />
@@ -15,6 +15,8 @@ function UserName() {
     return (
       <Text style={styles.error}>
         Could not load user: {error.message}
+        {'\n'}
+        Set EXPO_PUBLIC_LOCAL_USER_ID for local auth, or sign in with Cognito.
       </Text>
     )
   }
@@ -22,9 +24,9 @@ function UserName() {
   return (
     <View style={styles.nameBlock}>
       <Text style={styles.label}>First name</Text>
-      <Text style={styles.value}>{data?.firstName}</Text>
+      <Text style={styles.value}>{data?.firstName || '—'}</Text>
       <Text style={styles.label}>Last name</Text>
-      <Text style={styles.value}>{data?.lastName}</Text>
+      <Text style={styles.value}>{data?.lastName || '—'}</Text>
     </View>
   )
 }
@@ -76,6 +78,7 @@ const styles = StyleSheet.create({
   },
   error: {
     color: '#b00020',
-    textAlign: 'center'
+    textAlign: 'center',
+    lineHeight: 20
   }
 })

@@ -1,66 +1,52 @@
+import { TRPCError } from '@trpc/server'
 import { z } from 'zod'
-import { publicProcedure, protectedProcedure, router } from '../trpc'
+import { protectedProcedure, router } from '../trpc'
 
-const DEMO_USER_ID = 'demo-user'
+function toPublicUser(user: {
+  userId: string
+  firstName: string
+  lastName: string
+  email: string
+}) {
+  return {
+    userId: user.userId,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email
+  }
+}
 
+/**
+ * All procedures are protected and always operate on `ctx.userId`
+ * (the signed-in Cognito user). Callers cannot pass another user's id.
+ */
 export const userRouter = router({
-  /**
-   * Public demo profile for local Expo wiring before Cognito auth is connected.
-   * Seeds a demo user when the DynamoDB table is available.
-   */
-  demo: publicProcedure.query(async ({ ctx }) => {
-    if (!process.env.DYNAMODB_TABLE_NAME) {
-      return {
-        userId: DEMO_USER_ID,
-        firstName: 'Alex',
-        lastName: 'Spot',
-        email: 'alex@spot.local'
-      }
-    }
-
-    const user = await ctx.userService.ensureUser({
-      userId: DEMO_USER_ID,
-      email: 'alex@spot.local',
-      firstName: 'Alex',
-      lastName: 'Spot'
-    })
-
-    return {
-      userId: user.userId,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email
-    }
-  }),
-
-  me: protectedProcedure.query(async ({ ctx }) => {
-    const user = await ctx.userService.getById(ctx.userId)
+  get: protectedProcedure.query(async ({ ctx }) => {
+    const user = await ctx.userService.getUser(ctx.userId)
     if (!user) {
-      return null
+      throw new TRPCError({ code: 'NOT_FOUND', message: 'User not found' })
     }
-
-    return {
-      userId: user.userId,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email
-    }
+    return toPublicUser(user)
   }),
 
-  updateNames: protectedProcedure
+  update: protectedProcedure
     .input(
-      z.object({
-        firstName: z.string().min(1),
-        lastName: z.string().min(1)
-      })
+      z
+        .object({
+          firstName: z.string().min(1).optional(),
+          lastName: z.string().min(1).optional()
+        })
+        .refine(value => value.firstName !== undefined || value.lastName !== undefined, {
+          message: 'Provide firstName and/or lastName'
+        })
     )
     .mutation(async ({ ctx, input }) => {
-      const user = await ctx.userService.updateNames(ctx.userId, input.firstName, input.lastName)
-      return {
-        userId: user.userId,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email
-      }
-    })
+      const user = await ctx.userService.updateUser(ctx.userId, input)
+      return toPublicUser(user)
+    }),
+
+  delete: protectedProcedure.mutation(async ({ ctx }) => {
+    await ctx.userService.deleteUser(ctx.userId)
+    return { ok: true as const }
+  })
 })

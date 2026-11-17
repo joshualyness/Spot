@@ -64,6 +64,6 @@ export const handler = async (
     return
   }
 
-  await users.updateEmail(userId, email)
+  await users.update(userId, { email })
   console.log(`EmailAuthorised: Updated email for user ${userId}`)
 }

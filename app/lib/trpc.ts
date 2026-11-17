@@ -2,6 +2,7 @@ import { createTRPCReact } from '@trpc/react-query'
 import { httpBatchLink } from '@trpc/client'
 import type { AppRouter } from '../../api/src/trpc/router'
 import { Platform } from 'react-native'
+import { getAccessToken } from './auth'
 
 export const trpc = createTRPCReact<AppRouter>()
 
@@ -25,7 +26,11 @@ export function createTrpcClient() {
   return trpc.createClient({
     links: [
       httpBatchLink({
-        url: getApiUrl()
+        url: getApiUrl(),
+        async headers() {
+          const token = await getAccessToken()
+          return token ? { Authorization: `Bearer ${token}` } : {}
+        }
       })
     ]
   })

@@ -1,18 +1,27 @@
-import { UserRepository, type CreateUserInput } from '../repository/user.repository'
+import {
+  UserRepository,
+  type CreateUserInput,
+  type UpdateUserInput
+} from '../repository/user.repository'
 import type { UserRecord } from '../db/entities/user'
 
 export class UserService {
   constructor(private readonly users: UserRepository) {}
 
-  getById(userId: string): Promise<UserRecord | null> {
+  getUser(userId: string): Promise<UserRecord | null> {
     return this.users.getById(userId)
   }
 
-  ensureUser(input: CreateUserInput): Promise<UserRecord> {
-    return this.users.ensureUser(input)
+  updateUser(userId: string, input: UpdateUserInput): Promise<UserRecord> {
+    return this.users.update(userId, input)
   }
 
-  updateNames(userId: string, firstName: string, lastName: string): Promise<UserRecord> {
-    return this.users.updateNames(userId, firstName, lastName)
+  deleteUser(userId: string): Promise<void> {
+    return this.users.delete(userId)
+  }
+
+  /** Cognito post-confirmation only — not exposed on tRPC. */
+  ensureUser(input: CreateUserInput): Promise<UserRecord> {
+    return this.users.ensureUser(input)
   }
 }
