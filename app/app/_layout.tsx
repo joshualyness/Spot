@@ -11,8 +11,8 @@ import { Stack } from 'expo-router'
 import * as SplashScreen from 'expo-splash-screen'
 import * as SystemUI from 'expo-system-ui'
 import { useEffect } from 'react'
-import { StyleSheet } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { StyleSheet } from 'react-native-unistyles'
 import { StatusBar } from 'expo-status-bar'
 import { AppProviders } from '../providers/AppProviders'
 import { colors } from '../theme/colors'
@@ -60,9 +60,9 @@ export default function RootLayout() {
   )
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create(theme => ({
   root: {
     flex: 1,
-    backgroundColor: colors.black
+    backgroundColor: theme.colors.black
   }
-})
+}))

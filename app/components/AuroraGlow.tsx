@@ -1,5 +1,6 @@
 import { LinearGradient } from 'expo-linear-gradient'
-import { StyleSheet, View } from 'react-native'
+import { View } from 'react-native'
+import { StyleSheet } from 'react-native-unistyles'
 import Svg, { Defs, RadialGradient, Rect, Stop } from 'react-native-svg'
 import { colors } from '../theme/colors'
 
@@ -7,7 +8,7 @@ import { colors } from '../theme/colors'
 export function AuroraGlow() {
   return (
     <View pointerEvents="none" style={styles.wrap}>
-      <Svg width="100%" height="100%" style={StyleSheet.absoluteFill}>
+      <Svg width="100%" height="100%" style={StyleSheet.absoluteFillObject}>
         <Defs>
           <RadialGradient id="aurora" cx="50%" cy="78%" rx="58%" ry="42%">
             <Stop offset="0%" stopColor={colors.glowLime} stopOpacity="0.95" />
@@ -21,7 +22,7 @@ export function AuroraGlow() {
       <LinearGradient
         colors={['transparent', 'rgba(0,0,0,0.35)', colors.black]}
         locations={[0, 0.55, 1]}
-        style={styles.fade}
+        style={StyleSheet.absoluteFillObject}
       />
     </View>
   )
@@ -29,10 +30,7 @@ export function AuroraGlow() {
 
 const styles = StyleSheet.create({
   wrap: {
-    ...StyleSheet.absoluteFill,
+    ...StyleSheet.absoluteFillObject,
     top: '28%'
-  },
-  fade: {
-    ...StyleSheet.absoluteFill
   }
 })

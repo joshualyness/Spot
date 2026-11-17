@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
-import { colors } from '../theme/colors'
+import { Pressable, ScrollView, Text, View } from 'react-native'
+import { StyleSheet } from 'react-native-unistyles'
 
 const INSIGHTS = ['Overview', 'Strength', 'Recovery', 'Sleep', 'Nutrition', 'Mobility'] as const
 
@@ -44,7 +44,7 @@ export function InsightTabs({ onChange }: Props) {
   )
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create(theme => ({
   scroll: {
     flexGrow: 0
   },
@@ -58,14 +58,14 @@ const styles = StyleSheet.create({
     paddingBottom: 2
   },
   label: {
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: theme.fonts.sans,
     fontSize: 15,
     letterSpacing: 0.2,
-    color: colors.muted
+    color: theme.colors.muted
   },
   labelActive: {
-    color: colors.white,
-    fontFamily: 'DMSans_500Medium'
+    color: theme.colors.white,
+    fontFamily: theme.fonts.sansMedium
   },
   underlineTrack: {
     marginTop: 8,
@@ -77,6 +77,6 @@ const styles = StyleSheet.create({
     height: 1.5,
     width: '72%',
     borderRadius: 2,
-    backgroundColor: colors.white
+    backgroundColor: theme.colors.white
   }
-})
+}))

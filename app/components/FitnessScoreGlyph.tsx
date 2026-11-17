@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
-import { Animated, StyleSheet, Text, View } from 'react-native'
+import { Animated, Text, View } from 'react-native'
+import { StyleSheet } from 'react-native-unistyles'
 import Svg, { Circle } from 'react-native-svg'
-import { colors } from '../theme/colors'
 
 type Props = {
   score?: number
@@ -81,7 +81,7 @@ export function FitnessScoreGlyph({ score = 82, label = 'Fitness score' }: Props
   )
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create(theme => ({
   wrap: {
     width: SIZE,
     height: SIZE,
@@ -97,17 +97,17 @@ const styles = StyleSheet.create({
     paddingBottom: 8
   },
   score: {
-    fontFamily: 'InstrumentSerif_400Regular',
+    fontFamily: theme.fonts.serif,
     fontSize: 92,
     lineHeight: 96,
-    color: colors.white,
+    color: theme.colors.white,
     letterSpacing: -2
   },
   label: {
     marginTop: 4,
-    fontFamily: 'DMSans_400Regular',
+    fontFamily: theme.fonts.sans,
     fontSize: 15,
-    color: colors.mutedStrong,
+    color: theme.colors.mutedStrong,
     letterSpacing: 0.2
   }
-})
+}))

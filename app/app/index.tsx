@@ -1,10 +1,10 @@
-import { StyleSheet, View } from 'react-native'
+import { View } from 'react-native'
+import { StyleSheet } from 'react-native-unistyles'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { AuroraGlow } from '../components/AuroraGlow'
 import { BottomPills } from '../components/BottomPills'
 import { FitnessScoreGlyph } from '../components/FitnessScoreGlyph'
 import { InsightTabs } from '../components/InsightTabs'
-import { colors } from '../theme/colors'
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets()
@@ -26,10 +26,10 @@ export default function HomeScreen() {
   )
 }
 
-const styles = StyleSheet.create({
+const styles = StyleSheet.create(theme => ({
   screen: {
     flex: 1,
-    backgroundColor: colors.black
+    backgroundColor: theme.colors.black
   },
   top: {
     zIndex: 2
@@ -40,4 +40,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingBottom: 72
   }
-})
+}))
