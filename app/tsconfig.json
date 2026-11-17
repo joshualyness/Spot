@@ -3,5 +3,9 @@
   "compilerOptions": {
     "strict": true
   },
-  "include": ["**/*.ts", "**/*.tsx", "../api/src/trpc/router.ts"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "../api/src/trpc/router.ts"
+  ]
 }
