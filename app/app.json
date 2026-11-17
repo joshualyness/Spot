@@ -13,7 +13,7 @@
       "supportsTablet": false,
       "buildNumber": "1",
       "infoPlist": {
-        "UIViewControllerBasedStatusBarAppearance": true,
+        "UIViewControllerBasedStatusBarAppearance": false,
         "UIStatusBarStyle": "UIStatusBarStyleLightContent"
       }
     },
