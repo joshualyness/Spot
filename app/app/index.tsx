@@ -1,25 +1,38 @@
+import { useState } from 'react'
 import { View } from 'react-native'
+import { useSharedValue } from 'react-native-reanimated'
 import { StyleSheet } from 'react-native-unistyles'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { AuroraGlow } from '../components/AuroraGlow'
 import { BottomPills } from '../components/BottomPills'
 import { FitnessScoreGlyph } from '../components/FitnessScoreGlyph'
-import { InsightTabs } from '../components/InsightTabs'
+import { INSIGHTS, InsightTabs, type InsightTab } from '../components/InsightTabs'
+import { InsightPager } from '../components/home/InsightPager'
+import { TabTitlePane } from '../components/home/TabTitlePane'
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets()
+  const [activeTab, setActiveTab] = useState<InsightTab>('Overview')
+  const progress = useSharedValue(INSIGHTS.indexOf('Overview'))
+  const panes = INSIGHTS.map(tab =>
+    tab === 'Overview' ? (
+      <View key={tab} style={styles.overview}>
+        <FitnessScoreGlyph score={82} label="Fitness score" />
+      </View>
+    ) : (
+      <TabTitlePane key={tab} title={tab} />
+    )
+  )
 
   return (
     <View style={styles.screen}>
-      <AuroraGlow />
+      <AuroraGlow progress={progress} />
 
       <View style={[styles.top, { paddingTop: insets.top + 18 }]}>
-        <InsightTabs />
+        <InsightTabs active={activeTab} onChange={setActiveTab} progress={progress} />
       </View>
 
-      <View style={styles.center}>
-        <FitnessScoreGlyph score={82} label="Fitness score" />
-      </View>
+      <InsightPager progress={progress}>{panes}</InsightPager>
 
       <BottomPills />
     </View>
@@ -34,10 +47,10 @@ const styles = StyleSheet.create(theme => ({
   top: {
     zIndex: 2
   },
-  center: {
+  overview: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingBottom: 72
+    paddingBottom: 88
   }
 }))

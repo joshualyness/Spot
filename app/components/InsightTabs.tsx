@@ -1,5 +1,5 @@
-import { useCallback, useRef, useState } from 'react'
-import { LayoutChangeEvent, Pressable, ScrollView, Text, View } from 'react-native'
+import { useCallback, useEffect, useRef } from 'react'
+import { LayoutChangeEvent, Pressable, ScrollView, View } from 'react-native'
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -11,47 +11,57 @@ import Animated, {
 } from 'react-native-reanimated'
 import { StyleSheet } from 'react-native-unistyles'
 
-const INSIGHTS = ['Data', 'Sales', 'Overview', 'Support', 'Operations'] as const
+export const INSIGHTS = ['Data', 'Sales', 'Overview', 'Support', 'Operations'] as const
 export type InsightTab = (typeof INSIGHTS)[number]
 
 type TabLayout = { x: number; width: number }
 
 type Props = {
-  onChange?: (tab: InsightTab) => void
+  active: InsightTab
+  onChange: (tab: InsightTab) => void
+  progress: SharedValue<number>
 }
 
-const PARALLAX_DELAY_MS = 55
+const PARALLAX_DELAY_MS = 70
 
-export function InsightTabs({ onChange }: Props) {
-  const [active, setActive] = useState<InsightTab>('Overview')
+export function InsightTabs({ active, onChange, progress }: Props) {
   const layouts = useRef<Partial<Record<InsightTab, TabLayout>>>({})
   const underlineX = useSharedValue(0)
   const underlineW = useSharedValue(52)
-  const drift = useSharedValue(0)
+  const drift = useSharedValue(INSIGHTS.indexOf(active))
 
   const syncUnderline = useCallback(
     (tab: InsightTab) => {
       const layout = layouts.current[tab]
+      const index = INSIGHTS.indexOf(tab)
+      progress.value = withTiming(index, {
+        duration: 480,
+        easing: Easing.out(Easing.cubic)
+      })
+      drift.value = withDelay(
+        PARALLAX_DELAY_MS / 2,
+        withTiming(index, { duration: 480, easing: Easing.out(Easing.cubic) })
+      )
       if (!layout) return
       underlineW.value = withDelay(
         PARALLAX_DELAY_MS,
-        withSpring(layout.width * 0.72, { damping: 20, stiffness: 220 })
+        withSpring(layout.width * 0.72, { damping: 19, stiffness: 210 })
       )
       underlineX.value = withDelay(
         PARALLAX_DELAY_MS,
-        withSpring(layout.x + layout.width * 0.14, { damping: 20, stiffness: 220 })
-      )
-      drift.value = withDelay(
-        PARALLAX_DELAY_MS / 2,
-        withTiming(INSIGHTS.indexOf(tab), { duration: 420, easing: Easing.out(Easing.cubic) })
+        withSpring(layout.x + layout.width * 0.14, { damping: 19, stiffness: 210 })
       )
     },
-    [drift, underlineW, underlineX]
+    [drift, progress, underlineW, underlineX]
   )
 
+  useEffect(() => {
+    syncUnderline(active)
+  }, [active, syncUnderline])
+
   const select = (tab: InsightTab) => {
-    setActive(tab)
-    onChange?.(tab)
+    if (tab === active) return
+    onChange(tab)
     syncUnderline(tab)
   }
 
@@ -115,8 +125,10 @@ function TabLabel({
 }) {
   const labelStyle = useAnimatedStyle(() => {
     const delta = index - drift.value
-    const parallax = delta * 10
+    const parallax = delta * 14
+    const opacity = 0.38 + Math.max(0, 1 - Math.abs(delta) * 0.55) * 0.62
     return {
+      opacity,
       transform: [{ translateX: parallax }]
     }
   })
