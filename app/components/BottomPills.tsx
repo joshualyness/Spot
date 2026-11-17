@@ -4,11 +4,11 @@ import { Pressable, View } from 'react-native'
 import { StyleSheet } from 'react-native-unistyles'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-export const DOCK_PILL_HEIGHT = 52
+export const DOCK_PILL_HEIGHT = 56
 export const DOCK_VERTICAL_PADDING = 8
 export const AURORA_GAP_ABOVE_DOCK = 24
 
-const PILL_W = 115
+const PILL_W = 132
 
 export function auroraBottomInset(safeBottom: number) {
   return DOCK_PILL_HEIGHT + DOCK_VERTICAL_PADDING + Math.max(safeBottom, 12) + AURORA_GAP_ABOVE_DOCK

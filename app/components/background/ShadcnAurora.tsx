@@ -1,10 +1,10 @@
 import { GLView, type ExpoWebGLRenderingContext } from 'expo-gl'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { type LayoutChangeEvent, View } from 'react-native'
 import { StyleSheet } from 'react-native-unistyles'
 import { AuroraEngine, type AuroraSettings } from '../../lib/aurora/engine'
+import { AuroraSvgFallback } from './AuroraSvgFallback'
 
-/** Params from shadcn.io/background/aurora (Spot defaults). */
 export type ShadcnAuroraProps = {
   intensity?: number
   amplitude?: number
@@ -36,6 +36,7 @@ export function ShadcnAurora({
 }: ShadcnAuroraProps) {
   const engineRef = useRef<AuroraEngine | null>(null)
   const layoutRef = useRef({ width: 0, height: 0 })
+  const [glActive, setGlActive] = useState(false)
 
   const settings: AuroraSettings = {
     colors,
@@ -61,10 +62,16 @@ export function ShadcnAurora({
       engineRef.current = engine
       engine.setDrift(drift)
       const { width, height: h } = layoutRef.current
-      if (width > 0 && h > 0) engine.resize(width, h)
+      if (width > 0 && h > 0) {
+        engine.resize(width, h)
+      } else {
+        engine.resize(gl.drawingBufferWidth, gl.drawingBufferHeight)
+      }
       engine.start()
-    } catch {
-      // Shader unavailable on this device — parent shows a flat fallback tint.
+      setGlActive(true)
+    } catch (e) {
+      if (__DEV__) console.warn('[Aurora] WebGL unavailable', e)
+      setGlActive(false)
     }
   }
 
@@ -79,14 +86,29 @@ export function ShadcnAurora({
   useEffect(() => () => engineRef.current?.stop(), [])
 
   return (
-    <View style={styles.fill} onLayout={onLayout}>
-      <GLView style={styles.fill} msaaSamples={0} onContextCreate={onContextCreate} />
+    <View style={styles.host} onLayout={onLayout}>
+      <AuroraSvgFallback />
+      <GLView
+        style={[styles.gl, glActive ? styles.glVisible : styles.glHidden]}
+        msaaSamples={0}
+        onContextCreate={onContextCreate}
+      />
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  fill: {
-    flex: 1
+  host: {
+    flex: 1,
+    minHeight: 120
+  },
+  gl: {
+    ...StyleSheet.absoluteFillObject
+  },
+  glVisible: {
+    opacity: 1
+  },
+  glHidden: {
+    opacity: 0
   }
 })

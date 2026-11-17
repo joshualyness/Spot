@@ -3,14 +3,23 @@ import { AURORA_FRAGMENT, AURORA_VERTEX } from './shaders'
 
 export type AuroraUniforms = Record<string, WebGLUniformLocation | null>
 
+function shaderLog(gl: ExpoWebGLRenderingContext, shader: WebGLShader) {
+  if (__DEV__ && !gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    console.warn('[Aurora]', gl.getShaderInfoLog(shader))
+  }
+}
+
 export function compileShader(gl: ExpoWebGLRenderingContext, type: number, source: string) {
   const shader = gl.createShader(type)
   if (!shader) return null
   gl.shaderSource(shader, source)
   gl.compileShader(shader)
-  if (gl.getShaderParameter(shader, gl.COMPILE_STATUS)) return shader
-  gl.deleteShader(shader)
-  return null
+  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+    shaderLog(gl, shader)
+    gl.deleteShader(shader)
+    return null
+  }
+  return shader
 }
 
 export function linkAuroraProgram(gl: ExpoWebGLRenderingContext) {
@@ -27,6 +36,7 @@ export function linkAuroraProgram(gl: ExpoWebGLRenderingContext) {
   gl.deleteShader(fragment)
 
   if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    if (__DEV__) console.warn('[Aurora]', gl.getProgramInfoLog(program))
     gl.deleteProgram(program)
     return null
   }

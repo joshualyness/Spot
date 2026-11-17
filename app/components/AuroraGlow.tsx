@@ -14,7 +14,7 @@ type Props = {
 
 const PANEL_RADIUS = 64
 
-/** Edge-to-edge aurora panel (shadcn curtain shader) with rounded bottom above the dock. */
+/** Edge-to-edge aurora panel with rounded bottom above the dock. */
 export function AuroraGlow({ progress, safeBottom = 0 }: Props) {
   const [drift, setDrift] = useState(0)
   const bottom = auroraBottomInset(safeBottom)
@@ -42,16 +42,13 @@ export function AuroraGlow({ progress, safeBottom = 0 }: Props) {
           drift={drift}
         />
         <LinearGradient
-          colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.35)', colors.black]}
-          locations={[0, 0.55, 1]}
+          pointerEvents="none"
+          colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0)', 'rgba(0,0,0,0.45)']}
+          locations={[0, 0.78, 1]}
           style={styles.fadeBottom}
         />
-        <LinearGradient
-          colors={['#0A1628', 'transparent']}
-          locations={[0, 0.35]}
-          style={styles.fadeTop}
-        />
       </View>
+      <View pointerEvents="none" style={styles.edgeFade} />
     </View>
   )
 }
@@ -71,12 +68,18 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: PANEL_RADIUS,
     borderBottomRightRadius: PANEL_RADIUS,
     overflow: 'hidden',
-    backgroundColor: '#05070A'
+    backgroundColor: colors.black
   },
   fadeBottom: {
     ...StyleSheet.absoluteFillObject
   },
-  fadeTop: {
-    ...StyleSheet.absoluteFillObject
+  edgeFade: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: PANEL_RADIUS,
+    borderBottomLeftRadius: PANEL_RADIUS,
+    borderBottomRightRadius: PANEL_RADIUS
   }
 })

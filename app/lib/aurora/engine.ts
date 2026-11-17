@@ -15,7 +15,7 @@ export type AuroraSettings = {
   blend: number
 }
 
-const INTRO_SECONDS = 2.4
+const INTRO_SECONDS = 1.2
 
 export class AuroraEngine {
   private gl: ExpoWebGLRenderingContext
@@ -25,7 +25,7 @@ export class AuroraEngine {
   private palette = new Float32Array(5 * 3)
   private view = { w: 1, h: 1 }
   private clock = 0
-  private reveal = 0
+  private reveal = 0.35
   private reduceMotion = false
   private drift = 0
   private last = 0
@@ -41,6 +41,9 @@ export class AuroraEngine {
     this.program = linked.program
     this.uniforms = linked.uniforms
     this.vao = setupAuroraMesh(gl).vao
+
+    gl.enable(gl.BLEND)
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
     AccessibilityInfo.isReduceMotionEnabled().then(v => {
       this.reduceMotion = v
@@ -110,7 +113,7 @@ export class AuroraEngine {
     gl.uniform1f(u.uReveal!, 1 - Math.pow(1 - this.reveal, 3))
     gl.uniform1f(u.uOpacity!, 1)
     gl.uniform1f(u.uLightMode!, 0)
-    gl.clearColor(0, 0, 0, 1)
+    gl.clearColor(0, 0, 0, 0)
     gl.clear(gl.COLOR_BUFFER_BIT)
     gl.drawArrays(gl.TRIANGLES, 0, 3)
     gl.endFrameEXP()
