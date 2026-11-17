@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
 export const DOCK_PILL_HEIGHT = 56
 export const DOCK_VERTICAL_PADDING = 8
-export const AURORA_GAP_ABOVE_DOCK = 24
+export const AURORA_GAP_ABOVE_DOCK = 20
 
 const PILL_W = 132
 

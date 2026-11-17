@@ -12,7 +12,7 @@ type Props = {
   safeBottom?: number
 }
 
-const PANEL_RADIUS = 64
+const PANEL_RADIUS = 36
 
 /** Edge-to-edge aurora panel with rounded bottom above the dock. */
 export function AuroraGlow({ progress, safeBottom = 0 }: Props) {
