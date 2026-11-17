@@ -8,13 +8,16 @@ import {
   useFonts as useInstrumentSerif
 } from '@expo-google-fonts/instrument-serif'
 import { Stack } from 'expo-router'
+import * as SplashScreen from 'expo-splash-screen'
 import * as SystemUI from 'expo-system-ui'
 import { useEffect } from 'react'
-import { ActivityIndicator, StyleSheet, View } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { StatusBar } from 'expo-status-bar'
 import { AppProviders } from '../providers/AppProviders'
 import { colors } from '../theme/colors'
+
+SplashScreen.preventAutoHideAsync().catch(() => {})
 
 export default function RootLayout() {
   const [dmLoaded] = useDmSans({
@@ -25,16 +28,20 @@ export default function RootLayout() {
     InstrumentSerif_400Regular
   })
 
+  const ready = dmLoaded && serifLoaded
+
   useEffect(() => {
     void SystemUI.setBackgroundColorAsync(colors.black)
   }, [])
 
-  if (!dmLoaded || !serifLoaded) {
-    return (
-      <View style={styles.boot}>
-        <ActivityIndicator color={colors.white} />
-      </View>
-    )
+  useEffect(() => {
+    if (ready) {
+      void SplashScreen.hideAsync()
+    }
+  }, [ready])
+
+  if (!ready) {
+    return null
   }
 
   return (
@@ -57,11 +64,5 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     backgroundColor: colors.black
-  },
-  boot: {
-    flex: 1,
-    backgroundColor: colors.black,
-    alignItems: 'center',
-    justifyContent: 'center'
   }
 })

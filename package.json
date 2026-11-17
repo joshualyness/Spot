@@ -6,11 +6,17 @@
     "api"
   ],
   "scripts": {
+    "postinstall": "patch-package",
     "dev:api": "npm run dev -w spot-api",
     "dev:app": "npm run start -w spot-app",
+    "ios": "npm run ios -w spot-app",
+    "prebuild:ios": "npm run prebuild:ios -w spot-app",
     "build:api": "npm run build -w spot-api"
   },
   "engines": {
     "node": ">=24"
+  },
+  "devDependencies": {
+    "patch-package": "^8.0.1"
   }
 }
