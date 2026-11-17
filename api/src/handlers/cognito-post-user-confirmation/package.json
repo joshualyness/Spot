@@ -1,0 +1,6 @@
+{
+  "name": "cognito-post-user-confirmation",
+  "version": "1.0.0",
+  "private": true,
+  "main": "index.js"
+}
