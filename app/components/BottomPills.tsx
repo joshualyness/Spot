@@ -4,9 +4,10 @@ import { Pressable, View } from 'react-native'
 import { StyleSheet } from 'react-native-unistyles'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-const TILE = 64
+const PILL_W = 192
+const PILL_H = 52
 
-/** Left / right dock tiles — dark grey, white centered icons. */
+/** Wide capsule dock actions — very dark fill, white icons. */
 export function BottomPills() {
   const insets = useSafeAreaInsets()
   const router = useRouter()
@@ -54,9 +55,9 @@ const styles = StyleSheet.create(theme => ({
     flex: 1
   },
   tile: {
-    width: TILE,
-    height: TILE,
-    borderRadius: 20,
+    width: PILL_W,
+    height: PILL_H,
+    borderRadius: 999,
     backgroundColor: theme.colors.dockTile,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: theme.colors.dockTileBorder,

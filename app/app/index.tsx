@@ -28,11 +28,11 @@ export default function HomeScreen() {
     <View style={styles.screen}>
       <AuroraGlow progress={progress} />
 
-      <View style={[styles.top, { paddingTop: insets.top + 18 }]}>
+      <InsightPager progress={progress}>{panes}</InsightPager>
+
+      <View pointerEvents="box-none" style={[styles.tabsOverlay, { paddingTop: insets.top + 8 }]}>
         <InsightTabs active={activeTab} onChange={setActiveTab} progress={progress} />
       </View>
-
-      <InsightPager progress={progress}>{panes}</InsightPager>
 
       <BottomPills />
     </View>
@@ -44,13 +44,18 @@ const styles = StyleSheet.create(theme => ({
     flex: 1,
     backgroundColor: theme.colors.black
   },
-  top: {
+  tabsOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
     zIndex: 2
   },
   overview: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingBottom: 88
+    paddingBottom: 88,
+    paddingTop: 72
   }
 }))

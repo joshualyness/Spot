@@ -18,7 +18,8 @@ const styles = StyleSheet.create(theme => ({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingBottom: 88
+    paddingBottom: 88,
+    paddingTop: 72
   },
   title: {
     fontFamily: theme.fonts.serif,
