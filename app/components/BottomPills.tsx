@@ -4,10 +4,17 @@ import { Pressable, View } from 'react-native'
 import { StyleSheet } from 'react-native-unistyles'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 
-const PILL_W = 192
-const PILL_H = 52
+export const DOCK_PILL_HEIGHT = 52
+export const DOCK_VERTICAL_PADDING = 8
+export const AURORA_GAP_ABOVE_DOCK = 24
 
-/** Wide capsule dock actions — very dark fill, white icons. */
+const PILL_W = 115
+
+export function auroraBottomInset(safeBottom: number) {
+  return DOCK_PILL_HEIGHT + DOCK_VERTICAL_PADDING + Math.max(safeBottom, 12) + AURORA_GAP_ABOVE_DOCK
+}
+
+/** Wide capsule dock actions — very dark fill, white centered icons. */
 export function BottomPills() {
   const insets = useSafeAreaInsets()
   const router = useRouter()
@@ -48,7 +55,7 @@ const styles = StyleSheet.create(theme => ({
     bottom: 0,
     flexDirection: 'row',
     alignItems: 'flex-end',
-    paddingTop: 8,
+    paddingTop: DOCK_VERTICAL_PADDING,
     zIndex: 3
   },
   spacer: {
@@ -56,7 +63,7 @@ const styles = StyleSheet.create(theme => ({
   },
   tile: {
     width: PILL_W,
-    height: PILL_H,
+    height: DOCK_PILL_HEIGHT,
     borderRadius: 999,
     backgroundColor: theme.colors.dockTile,
     borderWidth: StyleSheet.hairlineWidth,

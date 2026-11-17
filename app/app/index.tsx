@@ -26,7 +26,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.screen}>
-      <AuroraGlow progress={progress} />
+      <AuroraGlow progress={progress} safeBottom={insets.bottom} />
 
       <InsightPager progress={progress}>{panes}</InsightPager>
 

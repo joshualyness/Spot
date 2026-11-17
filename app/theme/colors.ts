@@ -6,7 +6,7 @@ export const colors = {
   mutedStrong: 'rgba(255,255,255,0.62)',
   pill: 'rgba(28,28,30,0.92)',
   pillBorder: 'rgba(255,255,255,0.08)',
-  dockTile: '#0C0C0E',
+  dockTile: '#111114',
   dockTileBorder: 'rgba(255,255,255,0.05)',
   glowLime: '#D6FF4B',
   glowCyan: '#2DE2C5',
