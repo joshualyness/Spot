@@ -1,0 +1,11 @@
+shared: &shared
+  hosted_zone_id: 'REPLACE_WITH_ROUTE53_HOSTED_ZONE_ID'
+dev:
+  <<: *shared
+  domain_name: 'api.dev.example.com'
+staging:
+  <<: *shared
+  domain_name: 'api.staging.example.com'
+production:
+  <<: *shared
+  domain_name: 'api.example.com'
