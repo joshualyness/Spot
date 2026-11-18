@@ -44,8 +44,9 @@ export function AuroraNativeBackground({
   useEffect(() => {
     if (layout.width === 0) return
 
-    const renderW = Math.min(420, Math.max(120, Math.round(layout.width)))
-    const renderH = Math.max(80, Math.round((layout.height / layout.width) * renderW))
+    // Low internal width + upscale (like uibrik first-frame 48px) melts columns into curtains.
+    const renderW = 80
+    const renderH = Math.max(96, Math.round((layout.height / layout.width) * renderW))
 
     let alive = true
     let last = 0
@@ -84,7 +85,15 @@ export function AuroraNativeBackground({
 
   return (
     <View style={styles.root} onLayout={onLayout}>
-      {uri ? <Image source={{ uri }} style={styles.image} contentFit="fill" transition={0} /> : null}
+      {uri ? (
+        <Image
+          source={{ uri }}
+          style={styles.image}
+          contentFit="fill"
+          transition={0}
+          cachePolicy="memory-disk"
+        />
+      ) : null}
     </View>
   )
 }

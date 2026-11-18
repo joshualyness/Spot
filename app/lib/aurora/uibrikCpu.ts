@@ -147,9 +147,8 @@ export function renderUibrikAuroraFrame(o: UibrikAuroraOptions): Uint8Array {
   const layers = Math.min(o.layers, MAX_LAYERS)
   const px = new Uint8Array(W * H * 3)
 
-  const xSpan = Math.max(aspect, 1)
   for (let cx = 0; cx < W; cx++) {
-    const x = ((cx + 0.5) / W) * xSpan
+    const x = ((cx + 0.5) / W) * aspect
     const xs = x / o.stretch
     const curtains: { y0: number; strength: number; light: Lab; reach: number }[] = []
     for (let i = 0; i < MAX_LAYERS; i++) {
@@ -187,7 +186,58 @@ export function renderUibrikAuroraFrame(o: UibrikAuroraOptions): Uint8Array {
       for (let k = 0; k < 3; k++) px[at + k] = Math.round(linearToSrgb(out[k]) * 255)
     }
   }
-  return px
+  return softenAurora(px, W, H)
+}
+
+/** Merges curtain columns — the raw math is one hue per column; blur matches scaled CSS fallback. */
+function softenAurora(px: Uint8Array, w: number, h: number) {
+  const tmp = new Uint8Array(px.length)
+  const hr = Math.max(3, Math.round(w / 12))
+  const vr = 2
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      let r = 0
+      let g = 0
+      let b = 0
+      let n = 0
+      for (let dx = -hr; dx <= hr; dx++) {
+        const sx = x + dx
+        if (sx < 0 || sx >= w) continue
+        const at = (y * w + sx) * 3
+        r += px[at]!
+        g += px[at + 1]!
+        b += px[at + 2]!
+        n++
+      }
+      const at = (y * w + x) * 3
+      tmp[at] = Math.round(r / n)
+      tmp[at + 1] = Math.round(g / n)
+      tmp[at + 2] = Math.round(b / n)
+    }
+  }
+  const out = new Uint8Array(px.length)
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      let r = 0
+      let g = 0
+      let b = 0
+      let n = 0
+      for (let dy = -vr; dy <= vr; dy++) {
+        const sy = y + dy
+        if (sy < 0 || sy >= h) continue
+        const at = (sy * w + x) * 3
+        r += tmp[at]!
+        g += tmp[at + 1]!
+        b += tmp[at + 2]!
+        n++
+      }
+      const at = (y * w + x) * 3
+      out[at] = Math.round(r / n)
+      out[at + 1] = Math.round(g / n)
+      out[at + 2] = Math.round(b / n)
+    }
+  }
+  return out
 }
 
 export function rgbToBmpBase64(px: Uint8Array, width: number, height: number): string {
@@ -228,13 +278,12 @@ export function shadcnDemoParams(input: {
 }) {
   const scale = input.scale ?? 0.55
   return {
-    intensity: input.intensity ?? 2,
-    waviness: (input.amplitude ?? 0.15) * 4,
-    stretch: Math.max(0.35, scale),
+    intensity: Math.min(1.6, input.intensity ?? 2),
+    waviness: (input.amplitude ?? 0.15) * 3.5,
+    stretch: Math.max(0.45, scale),
     speed: input.speed ?? 0.25,
-    /** Curtain hem — low value anchors light at the bottom edge (0 = bottom, 1 = top). */
-    height: 0.02,
-    spread: 0.4,
+    height: 0.04,
+    spread: 0.48,
     layers: 3
   }
 }
