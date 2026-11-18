@@ -161,9 +161,30 @@ const FRONT_PEAKS: PeakSpec[] = [
   }
 ]
 
+function baseBlobStops(strength: number): PeakSpec['stops'] {
+  return [
+    { offset: '0%', color: '#FFFFFF', opacity: 0.98 * strength },
+    { offset: '18%', color: '#F0FFAA', opacity: 0.82 },
+    { offset: '42%', color: colors.glowLime, opacity: 0.42 },
+    { offset: '100%', color: colors.glowDeep, opacity: 0 }
+  ]
+}
+
+/** Soft rounded caps where each front curtain meets the bottom edge. */
+const FRONT_BASE_BLOBS: PeakSpec[] = [
+  { cx: '9%', rx: '22%', ry: '24%', stops: baseBlobStops(0.9) },
+  { cx: '23%', rx: '24%', ry: '26%', stops: baseBlobStops(0.95) },
+  { cx: '37%', rx: '21%', ry: '23%', stops: baseBlobStops(0.92) },
+  { cx: '52%', rx: '26%', ry: '28%', stops: baseBlobStops(1) },
+  { cx: '66%', rx: '23%', ry: '25%', stops: baseBlobStops(0.94) },
+  { cx: '84%', rx: '22%', ry: '24%', stops: baseBlobStops(0.9) }
+]
+
 const BACK_BLUR = 10
 /** Front blur is 30% softer than back (smaller stdDeviation). */
 const FRONT_BLUR = 7
+/** Extra-heavy blur merges the bottom caps into one contiguous glow. */
+const FRONT_BASE_BLUR = 15
 
 export function StaticAuroraBackdrop({ width, height }: Props) {
   if (width <= 0 || height <= 0) return null
@@ -178,6 +199,9 @@ export function StaticAuroraBackdrop({ width, height }: Props) {
         </Filter>
         <Filter id="auroraFront" x="-30%" y="-30%" width="160%" height="160%">
           <FeGaussianBlur in="SourceGraphic" stdDeviation={FRONT_BLUR} />
+        </Filter>
+        <Filter id="auroraFrontBase" x="-40%" y="-20%" width="180%" height="160%">
+          <FeGaussianBlur in="SourceGraphic" stdDeviation={FRONT_BASE_BLUR} />
         </Filter>
         <RadialGradient id="auroraCenterShade" cx="50%" cy="38%" rx="58%" ry="52%">
           <Stop offset="0%" stopColor={colors.black} stopOpacity="0.72" />
@@ -226,6 +250,25 @@ export function StaticAuroraBackdrop({ width, height }: Props) {
             ))}
           </RadialGradient>
         ))}
+        {FRONT_BASE_BLOBS.map((peak, index) => (
+          <RadialGradient
+            key={`front-base-${index}`}
+            id={`auroraFrontBase${index}`}
+            cx={peak.cx}
+            cy="100%"
+            rx={peak.rx}
+            ry={peak.ry}
+          >
+            {peak.stops.map((stop, i) => (
+              <Stop
+                key={i}
+                offset={stop.offset}
+                stopColor={stop.color}
+                stopOpacity={stop.opacity}
+              />
+            ))}
+          </RadialGradient>
+        ))}
       </Defs>
 
       <G filter="url(#auroraBack)" opacity={0.96}>
@@ -246,6 +289,17 @@ export function StaticAuroraBackdrop({ width, height }: Props) {
             width={width}
             height={height}
             fill={`url(#auroraFrontPeak${index})`}
+          />
+        ))}
+      </G>
+
+      <G filter="url(#auroraFrontBase)" opacity={0.88}>
+        {FRONT_BASE_BLOBS.map((_, index) => (
+          <Rect
+            key={`front-base-${index}`}
+            width={width}
+            height={height}
+            fill={`url(#auroraFrontBase${index})`}
           />
         ))}
       </G>
