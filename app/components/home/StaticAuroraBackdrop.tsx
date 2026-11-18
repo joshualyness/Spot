@@ -129,92 +129,145 @@ const CURTAINS: Peak[] = [
   }
 ]
 
-function footStops(hot: number): Peak['stops'] {
-  const h = Math.min(1, hot)
+/** Outer foot — lime/chartreuse body (heavy blur reads as one band). */
+function footOuterStops(strength: number): Peak['stops'] {
+  const s = Math.min(1, strength)
   return [
-    { offset: '0%', color: '#FFFFFF', opacity: 1 },
-    { offset: '3%', color: '#FFFFFF', opacity: 0.99 * h },
-    { offset: '8%', color: '#FFFFEE', opacity: 0.97 * h },
-    { offset: '16%', color: '#F6FF99', opacity: 0.92 * h },
-    { offset: '28%', color: '#E8FF5A', opacity: 0.82 * h },
-    { offset: '45%', color: '#D6FF4B', opacity: 0.62 * h },
-    { offset: '68%', color: '#6AE8B8', opacity: 0.28 },
+    { offset: '0%', color: '#FAFFDD', opacity: 0.92 * s },
+    { offset: '10%', color: '#E8FF72', opacity: 0.88 * s },
+    { offset: '22%', color: '#D6FF4B', opacity: 0.78 * s },
+    { offset: '40%', color: '#9AE8A8', opacity: 0.52 * s },
+    { offset: '62%', color: '#4AD8C0', opacity: 0.32 * s },
     { offset: '100%', color: colors.glowDeep, opacity: 0 }
   ]
 }
 
-/** Full-width tray — merges caps into one contiguous lime band when blurred. */
-const FOOT_BASE: Peak = {
-  cx: '50%',
-  cy: '103%',
-  fx: '50%',
-  fy: '105.5%',
-  rx: '124%',
-  ry: '22%',
-  stops: footStops(1)
+/** Inner foot — white-yellow blow-out (reference core; light blur, drawn on top). */
+function footCoreStops(strength: number): Peak['stops'] {
+  const s = Math.min(1, strength)
+  return [
+    { offset: '0%', color: '#FFFFFF', opacity: 1 },
+    { offset: '4%', color: '#FFFFFF', opacity: 1 },
+    { offset: '10%', color: '#FFFFF2', opacity: 0.99 * s },
+    { offset: '20%', color: '#FBFFAA', opacity: 0.94 * s },
+    { offset: '35%', color: '#F0FF88', opacity: 0.72 * s },
+    { offset: '55%', color: '#E4FF66', opacity: 0.42 * s },
+    { offset: '100%', color: colors.glowDeep, opacity: 0 }
+  ]
 }
 
-/** Wavy foot — different vertical reach per column (height variation along width). */
-const FOOT_CAPS: Peak[] = [
+const FOOT_BASE: Peak = {
+  cx: '50%',
+  cy: '102.8%',
+  fx: '50%',
+  fy: '104.8%',
+  rx: '126%',
+  ry: '19%',
+  stops: footOuterStops(1)
+}
+
+/** Gentle crests — same baseline, modest ry spread (contiguous after outer blur). */
+const FOOT_WAVES: Peak[] = [
   {
     cx: '10%',
-    cy: '101.2%',
+    cy: '101.35%',
     fx: '10%',
-    fy: '103.2%',
-    rx: '24%',
-    ry: '13%',
-    stops: footStops(0.9)
+    fy: '102.6%',
+    rx: '26%',
+    ry: '14%',
+    stops: footOuterStops(0.92)
   },
   {
     cx: '27%',
-    cy: '101.9%',
+    cy: '101.35%',
     fx: '27%',
-    fy: '103.8%',
-    rx: '26%',
-    ry: '20%',
-    stops: footStops(0.96)
+    fy: '102.6%',
+    rx: '28%',
+    ry: '17%',
+    stops: footOuterStops(0.96)
   },
   {
     cx: '44%',
-    cy: '101%',
+    cy: '101.35%',
     fx: '44%',
-    fy: '102.8%',
-    rx: '22%',
-    ry: '11%',
-    stops: footStops(0.88)
+    fy: '102.6%',
+    rx: '24%',
+    ry: '13%',
+    stops: footOuterStops(0.9)
   },
   {
     cx: '52%',
-    cy: '101.7%',
+    cy: '101.35%',
     fx: '52%',
-    fy: '104%',
-    rx: '28%',
-    ry: '24%',
-    stops: footStops(1)
+    fy: '102.6%',
+    rx: '30%',
+    ry: '18%',
+    stops: footOuterStops(1)
   },
   {
     cx: '68%',
-    cy: '101.4%',
+    cy: '101.35%',
     fx: '68%',
-    fy: '103.5%',
-    rx: '25%',
-    ry: '17%',
-    stops: footStops(0.94)
+    fy: '102.6%',
+    rx: '26%',
+    ry: '16%',
+    stops: footOuterStops(0.94)
   },
   {
     cx: '90%',
-    cy: '101.1%',
+    cy: '101.35%',
     fx: '90%',
-    fy: '103%',
-    rx: '23%',
+    fy: '102.6%',
+    rx: '25%',
+    ry: '14%',
+    stops: footOuterStops(0.91)
+  }
+]
+
+const FOOT_CORE_BAND: Peak = {
+  cx: '50%',
+  cy: '101.2%',
+  fx: '50%',
+  fy: '102.4%',
+  rx: '104%',
+  ry: '11%',
+  stops: footCoreStops(0.95)
+}
+
+const FOOT_CORE_HOTSPOTS: Peak[] = [
+  {
+    cx: '27%',
+    cy: '101.15%',
+    fx: '27%',
+    fy: '102.25%',
+    rx: '20%',
     ry: '12%',
-    stops: footStops(0.89)
+    stops: footCoreStops(0.92)
+  },
+  {
+    cx: '52%',
+    cy: '101.1%',
+    fx: '52%',
+    fy: '102.2%',
+    rx: '26%',
+    ry: '14%',
+    stops: footCoreStops(1)
+  },
+  {
+    cx: '78%',
+    cy: '101.2%',
+    fx: '78%',
+    fy: '102.3%',
+    rx: '18%',
+    ry: '11%',
+    stops: footCoreStops(0.88)
   }
 ]
 
 const BACK_BLUR = 11
 const CURTAIN_BLUR = 7
-const FOOT_BLUR = 28
+const FOOT_OUTER_BLUR = 34
+const FOOT_CORE_BLUR = 8
 
 function PeakGradient({ id, peak }: { id: string; peak: Peak }) {
   return (
@@ -251,8 +304,11 @@ export function StaticAuroraBackdrop({ width, height }: Props) {
         <Filter id="auroraCurtain" x="-45%" y="-32%" width="190%" height="165%">
           <FeGaussianBlur in="SourceGraphic" stdDeviation={CURTAIN_BLUR} />
         </Filter>
-        <Filter id="auroraFoot" x="-55%" y="-35%" width="210%" height="175%">
-          <FeGaussianBlur in="SourceGraphic" stdDeviation={FOOT_BLUR} />
+        <Filter id="auroraFootOuter" x="-55%" y="-38%" width="210%" height="180%">
+          <FeGaussianBlur in="SourceGraphic" stdDeviation={FOOT_OUTER_BLUR} />
+        </Filter>
+        <Filter id="auroraFootCore" x="-40%" y="-28%" width="180%" height="150%">
+          <FeGaussianBlur in="SourceGraphic" stdDeviation={FOOT_CORE_BLUR} />
         </Filter>
         {BACK_WASHES.map((p, i) => (
           <PeakGradient key={`b${i}`} id={`auroraBack${i}`} peak={p} />
@@ -261,8 +317,12 @@ export function StaticAuroraBackdrop({ width, height }: Props) {
           <PeakGradient key={`c${i}`} id={`auroraCurtain${i}`} peak={p} />
         ))}
         <PeakGradient id="auroraFootBase" peak={FOOT_BASE} />
-        {FOOT_CAPS.map((p, i) => (
-          <PeakGradient key={`f${i}`} id={`auroraFootCap${i}`} peak={p} />
+        {FOOT_WAVES.map((p, i) => (
+          <PeakGradient key={`fw${i}`} id={`auroraFootWave${i}`} peak={p} />
+        ))}
+        <PeakGradient id="auroraFootCoreBand" peak={FOOT_CORE_BAND} />
+        {FOOT_CORE_HOTSPOTS.map((p, i) => (
+          <PeakGradient key={`fc${i}`} id={`auroraFootCore${i}`} peak={p} />
         ))}
         <LinearGradient id="auroraTopFade" x1="0%" y1="0%" x2="0%" y2="100%">
           <Stop offset="0%" stopColor={colors.black} stopOpacity="0.95" />
@@ -293,14 +353,26 @@ export function StaticAuroraBackdrop({ width, height }: Props) {
         ))}
       </G>
 
-      <G filter="url(#auroraFoot)" opacity={0.98}>
+      <G filter="url(#auroraFootOuter)" opacity={0.97}>
         <Rect width={width} height={height} fill="url(#auroraFootBase)" />
-        {FOOT_CAPS.map((_, i) => (
+        {FOOT_WAVES.map((_, i) => (
           <Rect
-            key={`foot-${i}`}
+            key={`foot-w-${i}`}
             width={width}
             height={height}
-            fill={`url(#auroraFootCap${i})`}
+            fill={`url(#auroraFootWave${i})`}
+          />
+        ))}
+      </G>
+
+      <G filter="url(#auroraFootCore)" opacity={0.94}>
+        <Rect width={width} height={height} fill="url(#auroraFootCoreBand)" />
+        {FOOT_CORE_HOTSPOTS.map((_, i) => (
+          <Rect
+            key={`foot-c-${i}`}
+            width={width}
+            height={height}
+            fill={`url(#auroraFootCore${i})`}
           />
         ))}
       </G>
