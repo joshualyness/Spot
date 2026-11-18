@@ -21,7 +21,7 @@ type PeakSpec = {
   stops: readonly { offset: string; color: string; opacity: number }[]
 }
 
-/** Bottom-anchored peaks — static, single blur pass (reference Agentix layout). */
+/** Bottom-anchored peaks (reference Agentix layout). */
 const PEAKS: PeakSpec[] = [
   {
     cx: '12%',
@@ -92,6 +92,13 @@ const FLOOR: PeakSpec = {
   ]
 }
 
+/** Brighter additive pass (front layer). */
+const FRONT_PEAK_IDS = [2, 3, 4] as const
+
+const BACK_BLUR = 10
+/** Front blur is 30% softer than back (smaller stdDeviation). */
+const FRONT_BLUR = 7
+
 export function StaticAuroraBackdrop({ width, height }: Props) {
   if (width <= 0 || height <= 0) return null
 
@@ -100,8 +107,11 @@ export function StaticAuroraBackdrop({ width, height }: Props) {
   return (
     <Svg width={width} height={height}>
       <Defs>
-        <Filter id="auroraSoft" x="-35%" y="-35%" width="170%" height="170%">
-          <FeGaussianBlur in="SourceGraphic" stdDeviation="10" />
+        <Filter id="auroraBack" x="-35%" y="-35%" width="170%" height="170%">
+          <FeGaussianBlur in="SourceGraphic" stdDeviation={BACK_BLUR} />
+        </Filter>
+        <Filter id="auroraFront" x="-30%" y="-30%" width="160%" height="160%">
+          <FeGaussianBlur in="SourceGraphic" stdDeviation={FRONT_BLUR} />
         </Filter>
         <RadialGradient id="auroraCenterShade" cx="50%" cy="38%" rx="58%" ry="52%">
           <Stop offset="0%" stopColor={colors.black} stopOpacity="0.72" />
@@ -133,10 +143,21 @@ export function StaticAuroraBackdrop({ width, height }: Props) {
         ))}
       </Defs>
 
-      <G filter="url(#auroraSoft)" opacity={0.98}>
+      <G filter="url(#auroraBack)" opacity={0.96}>
         {layers.map((_, index) => (
           <Rect
-            key={`layer-${index}`}
+            key={`back-${index}`}
+            width={width}
+            height={height}
+            fill={`url(#auroraPeak${index})`}
+          />
+        ))}
+      </G>
+
+      <G filter="url(#auroraFront)" opacity={0.62}>
+        {FRONT_PEAK_IDS.map(index => (
+          <Rect
+            key={`front-${index}`}
             width={width}
             height={height}
             fill={`url(#auroraPeak${index})`}
