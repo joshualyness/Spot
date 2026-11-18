@@ -1,26 +1,23 @@
 export const AURORA_LAYERS = 5
-export const AURORA_COLS = 64
+export const AURORA_COLS = 56
 
 /** uibrik-inspired defaults (tuned for Spot panel). */
 export const AURORA_PARAMS = {
-  intensity: 1.55,
-  height: 0.46,
-  spread: 0.48,
+  intensity: 1.85,
+  spread: 0.44,
   wave: 0.15,
   stretch: 1.18,
-  speed: 0.09
+  baseFromBottom: 0.11
 } as const
 
 /** Borealis stops (mirrors theme/colors glow tokens). */
 const PALETTE = ['#D6FF4B', '#2DE2C5', '#0B6B7A', '#3D6DFF', '#021018'] as const
 
 function clamp01(v: number) {
-  'worklet'
   return Math.min(1, Math.max(0, v))
 }
 
 function hashNoise(x: number, t: number, seed: number) {
-  'worklet'
   return (
     Math.sin(x * 1.73 + t * 0.91 + seed * 2.17) * 0.52 +
     Math.sin(x * 3.07 - t * 0.58 + seed * 4.3) * 0.28 +
@@ -29,7 +26,6 @@ function hashNoise(x: number, t: number, seed: number) {
 }
 
 function paletteRgb(hue: number) {
-  'worklet'
   const h = ((hue % 1) + 1) % 1
   const scaled = h * (PALETTE.length - 1)
   const i = Math.floor(scaled)
@@ -44,38 +40,36 @@ function paletteRgb(hue: number) {
 }
 
 function hexToRgb(hex: string) {
-  'worklet'
   const h = hex.replace('#', '')
   const n = parseInt(h.length === 3 ? h.replace(/(.)/g, '$1$1') : h, 16)
   return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 }
 }
 
 function curtainAt(xNorm: number, layer: number, t: number, aspect: number) {
-  'worklet'
-  const { height, wave, stretch } = AURORA_PARAMS
+  const { wave, stretch, baseFromBottom } = AURORA_PARAMS
   const x = xNorm * aspect
   const xs = x / stretch
   const fi = layer
-  const y0 =
-    height -
-    0.07 * fi +
-    wave * 0.11 * hashNoise(xs * 0.8 + fi * 3.1, t, fi) +
-    wave * 0.04 * hashNoise(xs * 2.2, t * 1.6, fi + 4)
+  const fromBottom =
+    baseFromBottom +
+    0.055 * fi +
+    wave * 0.09 * hashNoise(xs * 0.8 + fi * 3.1, t, fi) +
+    wave * 0.035 * hashNoise(xs * 2.2, t * 1.6, fi + 4)
+  const edge = clamp01(1 - fromBottom)
   const fold = 0.55 + 0.45 * hashNoise(xs * 1.1 + fi * 5, t * 0.8, fi + 2)
   const strength = fold * Math.max(1 - 0.18 * fi, 0.25)
   const hue =
     xs * 0.16 + t * 0.35 + fi * 0.33 + 0.08 * hashNoise(xs * 0.7, t, fi + 9)
-  return { edge: y0, strength, hue }
+  return { edge, strength, hue }
 }
 
-/** Additive glow at a point (yNorm: 0 top, 1 bottom). */
+/** Additive glow (yNorm: 0 top, 1 bottom). Matches uibrik d = uv.y - edge. */
 export function sampleGlow(
   xNorm: number,
   yNorm: number,
   t: number,
   aspect: number
 ) {
-  'worklet'
   const { intensity, spread } = AURORA_PARAMS
   let gr = 0
   let gg = 0
@@ -86,8 +80,8 @@ export function sampleGlow(
     const c = curtainAt(xNorm, i, t, aspect)
     const d = yNorm - c.edge
     const reach = spread * (0.75 + 0.3 * i)
-    const a =
-      (d > 0 ? Math.exp((-d * d) * 90) : Math.exp(-Math.max(0, -d) / reach)) * c.strength
+  const a =
+    (d > 0 ? Math.exp(-d / reach) : Math.exp(-d * d * 90)) * c.strength
 
     const light = paletteRgb(c.hue)
     gr += light.r * a
@@ -96,30 +90,28 @@ export function sampleGlow(
     ga += a
   }
 
-  const gain = intensity * 0.55
+  const gain = intensity * 0.78
   return {
     r: Math.min(255, gr * gain),
     g: Math.min(255, gg * gain),
     b: Math.min(255, gb * gain),
-    a: clamp01(ga * gain * 0.35)
+    a: clamp01(ga * gain * 0.68)
   }
 }
 
-/** Brighter screen pass for the “foreground” glow. */
 export function sampleGlowScreen(
   xNorm: number,
   yNorm: number,
   t: number,
   aspect: number
 ) {
-  'worklet'
   const base = sampleGlow(xNorm, yNorm, t, aspect)
-  const upperBias = clamp01((0.65 - yNorm) * 1.4)
+  const upperBias = clamp01((0.7 - yNorm) * 1.25)
   return {
-    r: Math.min(255, base.r * (1.1 + upperBias * 0.25)),
-    g: Math.min(255, base.g * (1.05 + upperBias * 0.08)),
-    b: Math.min(255, base.b * (1.15 + upperBias * 0.35)),
-    a: clamp01(base.a * (0.85 + upperBias * 0.4))
+    r: Math.min(255, base.r * (1.08 + upperBias * 0.22)),
+    g: Math.min(255, base.g * (1.04 + upperBias * 0.06)),
+    b: Math.min(255, base.b * (1.12 + upperBias * 0.3)),
+    a: clamp01(base.a * (0.9 + upperBias * 0.35))
   }
 }
 
@@ -129,7 +121,6 @@ export function columnGradientStops(
   aspect: number,
   pass: 'curtain' | 'screen'
 ) {
-  'worklet'
   const steps = 11
   const outColors: string[] = []
   const outPos: number[] = []

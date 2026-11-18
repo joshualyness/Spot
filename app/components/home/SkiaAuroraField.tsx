@@ -4,11 +4,9 @@ import {
   Group,
   LinearGradient,
   Rect,
-  vec,
-  useClock
+  vec
 } from '@shopify/react-native-skia'
-import { useMemo } from 'react'
-import { useDerivedValue, type SharedValue } from 'react-native-reanimated'
+import { useEffect, useMemo, useState } from 'react'
 import {
   AURORA_COLS,
   columnGradientStops
@@ -21,103 +19,72 @@ type Props = {
   animate?: boolean
 }
 
-function AuroraColumn({
-  index,
-  width,
-  height,
-  aspect,
-  clock,
-  drift,
-  animate,
-  pass
-}: {
-  index: number
-  width: number
-  height: number
-  aspect: number
-  clock: SharedValue<number>
-  drift: number
-  animate: boolean
-  pass: 'curtain' | 'screen'
-}) {
-  const colW = width / AURORA_COLS
-  const x = index * colW
-
-  const colors = useDerivedValue(() => {
-    const t = (animate ? clock.value / 1000 : 0) + drift * 0.22
-    const xNorm = (index + 0.5) / AURORA_COLS + drift * 0.035
-    return columnGradientStops(xNorm, t, aspect, pass).colors
-  })
-
-  const positions = useDerivedValue(() => {
-    const t = (animate ? clock.value / 1000 : 0) + drift * 0.22
-    const xNorm = (index + 0.5) / AURORA_COLS + drift * 0.035
-    return columnGradientStops(xNorm, t, aspect, pass).positions
-  })
-
-  return (
-    <Rect x={x} y={0} width={colW + 1.5} height={height}>
-      <LinearGradient
-        start={vec(0, height)}
-        end={vec(0, 0)}
-        colors={colors}
-        positions={positions}
-      />
-    </Rect>
-  )
-}
-
 export function SkiaAuroraField({
   width,
   height,
   drift = 0,
   animate = true
 }: Props) {
-  const clock = useClock()
   const aspect = height > 0 ? width / height : 1
-  const columns = useMemo(
-    () => Array.from({ length: AURORA_COLS }, (_, i) => i),
-    []
-  )
+  const [time, setTime] = useState(0)
+
+  useEffect(() => {
+    if (!animate) {
+      setTime(0)
+      return
+    }
+    let raf = 0
+    const loop = (ts: number) => {
+      setTime(ts / 1000)
+      raf = requestAnimationFrame(loop)
+    }
+    raf = requestAnimationFrame(loop)
+    return () => cancelAnimationFrame(raf)
+  }, [animate])
+
+  const columns = useMemo(() => {
+    const t = time + drift * 0.22
+  const colW = width / AURORA_COLS
+  return Array.from({ length: AURORA_COLS }, (_, index) => {
+      const xNorm = (index + 0.5) / AURORA_COLS + drift * 0.035
+      return {
+        x: index * colW,
+        w: colW + 1.5,
+        curtain: columnGradientStops(xNorm, t, aspect, 'curtain'),
+        screen: columnGradientStops(xNorm, t, aspect, 'screen')
+      }
+    })
+  }, [time, drift, aspect, width])
 
   if (width <= 0 || height <= 0) return null
 
   return (
     <Canvas style={{ width, height }}>
-      <Group
-        layer
-        opacity={0.92}
-      >
-        <BlurMask blur={32} style="normal" />
-        {columns.map(i => (
-          <AuroraColumn
-            key={`c-${i}`}
-            index={i}
-            width={width}
-            height={height}
-            aspect={aspect}
-            clock={clock}
-            drift={drift}
-            animate={animate}
-            pass="curtain"
-          />
+      <Group layer opacity={0.95}>
+        <BlurMask blur={28} style="normal" />
+        {columns.map((col, i) => (
+          <Rect key={`c-${i}`} x={col.x} y={0} width={col.w} height={height}>
+            <LinearGradient
+              start={vec(0, height)}
+              end={vec(0, 0)}
+              colors={col.curtain.colors}
+              positions={col.curtain.positions}
+            />
+          </Rect>
         ))}
       </Group>
 
-      <Group layer blendMode="plus" opacity={0.62}>
-        <BlurMask blur={22} style="normal" />
-        {columns.map(i => (
-          <AuroraColumn
-            key={`g-${i}`}
-            index={i}
-            width={width}
-            height={height}
-            aspect={aspect}
-            clock={clock}
-            drift={drift}
-            animate={animate}
-            pass="screen"
-          />
+      <Group layer blendMode="plus" opacity={0.58}>
+        <BlurMask blur={18} style="normal" />
+        {columns.map((col, i) => (
+          <Rect key={`g-${i}`} x={col.x} y={0} width={col.w} height={height}>
+            <LinearGradient
+              start={vec(0, height)}
+              end={vec(0, 0)}
+              colors={col.screen.colors}
+              positions={col.screen.positions}
+            />
+          </Rect>
         ))}
       </Group>
     </Canvas>
