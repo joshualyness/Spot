@@ -20,10 +20,20 @@ export type ShadcnAuroraProps = {
  * Aurora backdrop. Uses Reanimated + SVG (always-on). WebGL (`expo-gl`) is not used by default
  * because it requires a native rebuild and often fails silently when the GLES 3.0 shader cannot link.
  */
-export function ShadcnAurora({ drift = 0, speed = 0.25 }: ShadcnAuroraProps) {
+export function ShadcnAurora({
+  drift = 0,
+  speed = 0.25,
+  amplitude = 0.15,
+  intensity = 2
+}: ShadcnAuroraProps) {
   return (
     <View style={styles.host} onLayout={onLayoutNoop}>
-      <AuroraNativeBackground drift={drift} speed={speed} />
+      <AuroraNativeBackground
+        drift={drift}
+        speed={speed}
+        amplitude={amplitude}
+        intensity={intensity}
+      />
     </View>
   )
 }

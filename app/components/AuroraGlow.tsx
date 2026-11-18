@@ -44,8 +44,8 @@ export function AuroraGlow({ progress, safeBottom = 0 }: Props) {
         />
         <LinearGradient
           pointerEvents="none"
-          colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0)', 'rgba(0,0,0,0.45)']}
-          locations={[0, 0.78, 1]}
+          colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0)', 'rgba(0,0,0,0.22)']}
+          locations={[0, 0.82, 1]}
           style={styles.fadeBottom}
         />
       </View>
