@@ -20,6 +20,8 @@ type Props = {
 }
 
 const PANEL_RADIUS = 40
+/** Extra draw width so blur/glow is not clipped at the side edges. */
+const AURORA_H_BLEED = 28
 
 /** Multi-peak aurora with slow transform drift (gradients stay static). */
 export function AuroraGlow({ progress, safeBottom = 0 }: Props) {
@@ -83,8 +85,20 @@ export function AuroraGlow({ progress, safeBottom = 0 }: Props) {
         />
 
         {size.width > 0 && (
-          <Animated.View style={[styles.glow, glowMotion]}>
-            <StaticAuroraBackdrop width={size.width} height={size.height} />
+          <Animated.View
+            style={[
+              styles.glow,
+              glowMotion,
+              {
+                left: -AURORA_H_BLEED,
+                width: size.width + AURORA_H_BLEED * 2
+              }
+            ]}
+          >
+            <StaticAuroraBackdrop
+              width={size.width + AURORA_H_BLEED * 2}
+              height={size.height}
+            />
           </Animated.View>
         )}
 

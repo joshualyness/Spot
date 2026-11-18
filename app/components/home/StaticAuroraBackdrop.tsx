@@ -86,12 +86,22 @@ const PEAKS: PeakSpec[] = [
       { offset: '62%', color: '#3D6DFF', opacity: 0.28 },
       { offset: '100%', color: colors.glowDeep, opacity: 0 }
     ]
+  },
+  {
+    cx: '94%',
+    rx: '36%',
+    ry: '44%',
+    stops: [
+      { offset: '0%', color: colors.glowCyan, opacity: 0.52 },
+      { offset: '28%', color: '#2F5BD4', opacity: 0.3 },
+      { offset: '100%', color: colors.glowDeep, opacity: 0 }
+    ]
   }
 ]
 
 const FLOOR: PeakSpec = {
   cx: '50%',
-  rx: '100%',
+  rx: '112%',
   ry: '26%',
   stops: [
     { offset: '0%', color: colors.glowLime, opacity: 0.62 },
@@ -157,13 +167,23 @@ const FRONT_PEAKS: PeakSpec[] = [
     ]
   },
   {
-    cx: '84%',
-    rx: '30%',
-    ry: '46%',
+    cx: '88%',
+    rx: '36%',
+    ry: '48%',
     stops: [
       { offset: '0%', color: colors.glowCyan, opacity: 0.72 },
       { offset: '32%', color: '#1A6F8F', opacity: 0.4 },
       { offset: '58%', color: '#4D7CFF', opacity: 0.32 },
+      { offset: '100%', color: colors.glowDeep, opacity: 0 }
+    ]
+  },
+  {
+    cx: '96%',
+    rx: '38%',
+    ry: '42%',
+    stops: [
+      { offset: '0%', color: '#D6FF4B', opacity: 0.68 },
+      { offset: '26%', color: colors.glowCyan, opacity: 0.4 },
       { offset: '100%', color: colors.glowDeep, opacity: 0 }
     ]
   }
@@ -229,13 +249,22 @@ const FRONT_BASE_BLOBS: BaseBlobSpec[] = [
     stops: baseBlobStops(0.96)
   },
   {
-    cx: '84%',
+    cx: '88%',
     cy: '101.2%',
-    fx: '84%',
+    fx: '88%',
     fy: '102.6%',
-    rx: '17%',
+    rx: '18%',
     ry: '11%',
     stops: baseBlobStops(0.91)
+  },
+  {
+    cx: '96%',
+    cy: '101.4%',
+    fx: '96%',
+    fy: '102.8%',
+    rx: '20%',
+    ry: '12%',
+    stops: baseBlobStops(0.88)
   }
 ]
 
@@ -253,13 +282,13 @@ export function StaticAuroraBackdrop({ width, height }: Props) {
   return (
     <Svg width={width} height={height}>
       <Defs>
-        <Filter id="auroraBack" x="-35%" y="-35%" width="170%" height="170%">
+        <Filter id="auroraBack" x="-50%" y="-35%" width="200%" height="170%">
           <FeGaussianBlur in="SourceGraphic" stdDeviation={BACK_BLUR} />
         </Filter>
-        <Filter id="auroraFront" x="-30%" y="-30%" width="160%" height="160%">
+        <Filter id="auroraFront" x="-50%" y="-30%" width="200%" height="160%">
           <FeGaussianBlur in="SourceGraphic" stdDeviation={FRONT_BLUR} />
         </Filter>
-        <Filter id="auroraFrontBase" x="-40%" y="-20%" width="180%" height="160%">
+        <Filter id="auroraFrontBase" x="-50%" y="-20%" width="200%" height="160%">
           <FeGaussianBlur in="SourceGraphic" stdDeviation={FRONT_BASE_BLUR} />
         </Filter>
         <RadialGradient id="auroraCenterShade" cx="50%" cy="38%" rx="58%" ry="52%">
