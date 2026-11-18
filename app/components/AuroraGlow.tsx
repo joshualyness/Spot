@@ -1,11 +1,9 @@
 import { LinearGradient } from 'expo-linear-gradient'
-import { useEffect, useState } from 'react'
-import { AccessibilityInfo, View, type LayoutChangeEvent } from 'react-native'
-import { runOnJS, type SharedValue, useAnimatedReaction } from 'react-native-reanimated'
+import { useState } from 'react'
+import { View, type LayoutChangeEvent } from 'react-native'
+import type { SharedValue } from 'react-native-reanimated'
 import { StyleSheet } from 'react-native-unistyles'
-import Svg, { Defs, RadialGradient, Rect, Stop } from 'react-native-svg'
-import { SvgAuroraField } from './home/SvgAuroraField'
-import { TAB_PARALLAX_ORIGIN } from './InsightTabs'
+import { StaticAuroraBackdrop } from './home/StaticAuroraBackdrop'
 import { AURORA_GAP_ABOVE_DOCK, auroraBottomInset } from './BottomPills'
 import { colors } from '../theme/colors'
 
@@ -16,55 +14,10 @@ type Props = {
 
 const PANEL_RADIUS = 40
 
-function LegacyRadialGlow({
-  width,
-  height,
-  drift
-}: {
-  width: number
-  height: number
-  drift: number
-}) {
-  return (
-    <View style={[styles.glow, { transform: [{ translateX: drift * 10 }] }]}>
-      <Svg width={width} height={height}>
-        <Defs>
-          <RadialGradient id="auroraCore" cx="50%" cy="100%" rx="78%" ry="56%">
-            <Stop offset="0%" stopColor={colors.glowLime} stopOpacity="0.92" />
-            <Stop offset="24%" stopColor={colors.glowCyan} stopOpacity="0.58" />
-            <Stop offset="48%" stopColor={colors.glowTeal} stopOpacity="0.32" />
-            <Stop offset="100%" stopColor={colors.glowDeep} stopOpacity="0" />
-          </RadialGradient>
-          <RadialGradient id="auroraTop" cx="50%" cy="16%" rx="88%" ry="58%">
-            <Stop offset="0%" stopColor="#1E5C78" stopOpacity="0.22" />
-            <Stop offset="100%" stopColor={colors.black} stopOpacity="0" />
-          </RadialGradient>
-        </Defs>
-        <Rect width={width} height={height} fill="url(#auroraTop)" />
-        <Rect width={width} height={height} fill="url(#auroraCore)" />
-      </Svg>
-    </View>
-  )
-}
-
-/** Five-layer curtain field (Skia) + additive glow pass; SVG radial on web. */
-export function AuroraGlow({ progress, safeBottom = 0 }: Props) {
+/** Static multi-peak aurora (no animation). */
+export function AuroraGlow({ safeBottom = 0 }: Props) {
   const bottom = auroraBottomInset(safeBottom)
   const [size, setSize] = useState({ width: 0, height: 0 })
-  const [drift, setDrift] = useState(0)
-  const [reduceMotion, setReduceMotion] = useState(false)
-
-  useEffect(() => {
-    void AccessibilityInfo.isReduceMotionEnabled().then(setReduceMotion)
-    const sub = AccessibilityInfo.addEventListener('reduceMotionChanged', setReduceMotion)
-    return () => sub.remove()
-  }, [])
-
-  useAnimatedReaction(
-    () => (progress ? progress.value - TAB_PARALLAX_ORIGIN : 0),
-    value => runOnJS(setDrift)(value),
-    [progress]
-  )
 
   const onLayout = (e: LayoutChangeEvent) => {
     const { width, height } = e.nativeEvent.layout
@@ -75,32 +28,21 @@ export function AuroraGlow({ progress, safeBottom = 0 }: Props) {
     <View pointerEvents="none" style={[styles.root, { bottom }]}>
       <View style={styles.shell} onLayout={onLayout}>
         <LinearGradient
-          colors={['#0A1628', colors.black, colors.black]}
-          locations={[0, 0.45, 1]}
+          colors={['#080E1A', colors.black, colors.black]}
+          locations={[0, 0.4, 1]}
           style={StyleSheet.absoluteFillObject}
         />
 
         {size.width > 0 && (
-          <View style={[styles.glow, { transform: [{ translateX: drift * 8 }] }]}>
-            <SvgAuroraField
-              width={size.width}
-              height={size.height}
-              drift={drift}
-              animate={!reduceMotion}
-            />
-          </View>
-        )}
-
-        {size.width > 0 && (
-          <View pointerEvents="none" style={styles.baseRadial}>
-            <LegacyRadialGlow width={size.width} height={size.height} drift={drift} />
+          <View style={styles.glow}>
+            <StaticAuroraBackdrop width={size.width} height={size.height} />
           </View>
         )}
 
         <LinearGradient
           pointerEvents="none"
-          colors={['transparent', 'rgba(0,0,0,0.12)', 'rgba(0,0,0,0.42)', colors.black]}
-          locations={[0, 0.38, 0.72, 1]}
+          colors={['rgba(0,0,0,0.55)', 'transparent', 'transparent', 'rgba(0,0,0,0.22)']}
+          locations={[0, 0.28, 0.62, 1]}
           style={StyleSheet.absoluteFillObject}
         />
       </View>
@@ -127,9 +69,5 @@ const styles = StyleSheet.create({
   },
   glow: {
     ...StyleSheet.absoluteFillObject
-  },
-  baseRadial: {
-    ...StyleSheet.absoluteFillObject,
-    opacity: 0.35
   }
 })

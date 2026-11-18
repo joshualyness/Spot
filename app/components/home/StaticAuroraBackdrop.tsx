@@ -1,0 +1,151 @@
+import Svg, {
+  Defs,
+  FeGaussianBlur,
+  Filter,
+  G,
+  RadialGradient,
+  Rect,
+  Stop
+} from 'react-native-svg'
+import { colors } from '../../theme/colors'
+
+type Props = {
+  width: number
+  height: number
+}
+
+type PeakSpec = {
+  cx: string
+  rx: string
+  ry: string
+  stops: readonly { offset: string; color: string; opacity: number }[]
+}
+
+/** Bottom-anchored peaks — static, single blur pass (reference Agentix layout). */
+const PEAKS: PeakSpec[] = [
+  {
+    cx: '12%',
+    rx: '38%',
+    ry: '52%',
+    stops: [
+      { offset: '0%', color: colors.glowLime, opacity: 0.55 },
+      { offset: '22%', color: colors.glowCyan, opacity: 0.42 },
+      { offset: '55%', color: colors.glowTeal, opacity: 0.2 },
+      { offset: '100%', color: colors.glowDeep, opacity: 0 }
+    ]
+  },
+  {
+    cx: '28%',
+    rx: '34%',
+    ry: '58%',
+    stops: [
+      { offset: '0%', color: '#C8F543', opacity: 0.72 },
+      { offset: '18%', color: colors.glowCyan, opacity: 0.5 },
+      { offset: '48%', color: '#0E8A7A', opacity: 0.26 },
+      { offset: '100%', color: colors.glowDeep, opacity: 0 }
+    ]
+  },
+  {
+    cx: '50%',
+    rx: '46%',
+    ry: '78%',
+    stops: [
+      { offset: '0%', color: colors.glowLime, opacity: 0.88 },
+      { offset: '14%', color: colors.glowCyan, opacity: 0.62 },
+      { offset: '32%', color: colors.glowTeal, opacity: 0.44 },
+      { offset: '58%', color: '#2F5BD4', opacity: 0.32 },
+      { offset: '100%', color: colors.glowDeep, opacity: 0 }
+    ]
+  },
+  {
+    cx: '71%',
+    rx: '36%',
+    ry: '56%',
+    stops: [
+      { offset: '0%', color: '#B8E83A', opacity: 0.65 },
+      { offset: '25%', color: '#2DE2C5', opacity: 0.4 },
+      { offset: '52%', color: '#3D6DFF', opacity: 0.3 },
+      { offset: '100%', color: colors.glowDeep, opacity: 0 }
+    ]
+  },
+  {
+    cx: '88%',
+    rx: '32%',
+    ry: '48%',
+    stops: [
+      { offset: '0%', color: colors.glowCyan, opacity: 0.58 },
+      { offset: '30%', color: '#1A6F8F', opacity: 0.35 },
+      { offset: '62%', color: '#3D6DFF', opacity: 0.28 },
+      { offset: '100%', color: colors.glowDeep, opacity: 0 }
+    ]
+  }
+]
+
+const FLOOR: PeakSpec = {
+  cx: '50%',
+  rx: '95%',
+  ry: '38%',
+  stops: [
+    { offset: '0%', color: colors.glowLime, opacity: 0.95 },
+    { offset: '35%', color: colors.glowCyan, opacity: 0.35 },
+    { offset: '100%', color: colors.glowDeep, opacity: 0 }
+  ]
+}
+
+export function StaticAuroraBackdrop({ width, height }: Props) {
+  if (width <= 0 || height <= 0) return null
+
+  const layers = [FLOOR, ...PEAKS]
+
+  return (
+    <Svg width={width} height={height}>
+      <Defs>
+        <Filter id="auroraSoft" x="-35%" y="-35%" width="170%" height="170%">
+          <FeGaussianBlur in="SourceGraphic" stdDeviation="22" />
+        </Filter>
+        <RadialGradient id="auroraCenterShade" cx="50%" cy="38%" rx="58%" ry="52%">
+          <Stop offset="0%" stopColor={colors.black} stopOpacity="0.72" />
+          <Stop offset="55%" stopColor={colors.black} stopOpacity="0.35" />
+          <Stop offset="100%" stopColor={colors.black} stopOpacity="0" />
+        </RadialGradient>
+        <RadialGradient id="auroraTopWash" cx="50%" cy="8%" rx="92%" ry="48%">
+          <Stop offset="0%" stopColor="#1A4A62" stopOpacity="0.18" />
+          <Stop offset="100%" stopColor={colors.black} stopOpacity="0" />
+        </RadialGradient>
+        {layers.map((peak, index) => (
+          <RadialGradient
+            key={`peak-${index}`}
+            id={`auroraPeak${index}`}
+            cx={peak.cx}
+            cy="100%"
+            rx={peak.rx}
+            ry={peak.ry}
+          >
+            {peak.stops.map((stop, i) => (
+              <Stop
+                key={i}
+                offset={stop.offset}
+                stopColor={stop.color}
+                stopOpacity={stop.opacity}
+              />
+            ))}
+          </RadialGradient>
+        ))}
+      </Defs>
+
+      <G filter="url(#auroraSoft)" opacity={0.98}>
+        {layers.map((_, index) => (
+          <Rect
+            key={`layer-${index}`}
+            width={width}
+            height={height}
+            fill={`url(#auroraPeak${index})`}
+          />
+        ))}
+      </G>
+
+      <Rect width={width} height={height} fill="url(#auroraTopWash)" />
+      <Rect width={width} height={height} fill="url(#auroraCenterShade)" />
+    </Svg>
+  )
+}
