@@ -226,13 +226,9 @@ export function StaticAuroraBackdrop({ width, height }: Props) {
         <Filter id="auroraBloom" x="-20%" y="-20%" width="140%" height="140%">
           <FeGaussianBlur in="SourceGraphic" stdDeviation={BLOOM_BLUR} />
         </Filter>
-        <RadialGradient id="auroraCenterShade" cx="50%" cy="32%" rx="52%" ry="40%">
-          <Stop offset="0%" stopColor={colors.black} stopOpacity="0.78" />
-          <Stop offset="48%" stopColor={colors.black} stopOpacity="0.28" />
-          <Stop offset="100%" stopColor={colors.black} stopOpacity="0" />
-        </RadialGradient>
-        <RadialGradient id="auroraTopWash" cx="50%" cy="8%" rx="92%" ry="48%">
-          <Stop offset="0%" stopColor="#1A4A62" stopOpacity="0.2" />
+        <RadialGradient id="auroraTopWash" cx="50%" cy="0%" rx="100%" ry="55%">
+          <Stop offset="0%" stopColor="#0A1628" stopOpacity="0.85" />
+          <Stop offset="38%" stopColor={colors.black} stopOpacity="0.35" />
           <Stop offset="100%" stopColor={colors.black} stopOpacity="0" />
         </RadialGradient>
         <RadialGradient
@@ -300,7 +296,6 @@ export function StaticAuroraBackdrop({ width, height }: Props) {
       </G>
 
       <Rect width={width} height={height} fill="url(#auroraTopWash)" />
-      <Rect width={width} height={height} fill="url(#auroraCenterShade)" />
     </Svg>
   )
 }

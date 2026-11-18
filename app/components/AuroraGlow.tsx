@@ -77,8 +77,8 @@ export function AuroraGlow({ progress, safeBottom = 0 }: Props) {
     <View pointerEvents="none" style={[styles.root, { bottom }]}>
       <View style={styles.shell} onLayout={onLayout}>
         <LinearGradient
-          colors={['#080E1A', colors.black, colors.black]}
-          locations={[0, 0.4, 1]}
+          colors={['#05080E', 'transparent', 'transparent']}
+          locations={[0, 0.22, 1]}
           style={StyleSheet.absoluteFillObject}
         />
 
@@ -88,12 +88,6 @@ export function AuroraGlow({ progress, safeBottom = 0 }: Props) {
           </Animated.View>
         )}
 
-        <LinearGradient
-          pointerEvents="none"
-          colors={['rgba(0,0,0,0.52)', 'transparent', 'transparent', 'transparent']}
-          locations={[0, 0.3, 0.68, 1]}
-          style={StyleSheet.absoluteFillObject}
-        />
       </View>
     </View>
   )
