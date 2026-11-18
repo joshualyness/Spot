@@ -60,69 +60,69 @@ const BACK_WASHES: Peak[] = [
   }
 ]
 
-/** Bottom-anchored teal columns — narrow rx, tall ry (pointed curtains). */
+/** Bottom-anchored teal columns — reach ~40% up the panel (60% from top). */
 const CURTAINS: Peak[] = [
   {
     cx: '10%',
     rx: '15%',
-    ry: '78%',
+    ry: '32%',
     stops: [
       { offset: '0%', color: '#3BE8D8', opacity: 0.88 },
-      { offset: '14%', color: '#2DE2C5', opacity: 0.72 },
-      { offset: '32%', color: '#1A8FC4', opacity: 0.38 },
+      { offset: '18%', color: '#2DE2C5', opacity: 0.68 },
+      { offset: '42%', color: '#1A8FC4', opacity: 0.22 },
       { offset: '100%', color: colors.glowDeep, opacity: 0 }
     ]
   },
   {
     cx: '27%',
     rx: '17%',
-    ry: '92%',
+    ry: '36%',
     stops: [
       { offset: '0%', color: '#4AF0E4', opacity: 0.92 },
-      { offset: '10%', color: '#2DE2C5', opacity: 0.8 },
-      { offset: '28%', color: '#2288CC', opacity: 0.42 },
+      { offset: '12%', color: '#2DE2C5', opacity: 0.78 },
+      { offset: '38%', color: '#2288CC', opacity: 0.3 },
       { offset: '100%', color: colors.glowDeep, opacity: 0 }
     ]
   },
   {
     cx: '44%',
     rx: '14%',
-    ry: '72%',
+    ry: '30%',
     stops: [
       { offset: '0%', color: '#2DE2C5', opacity: 0.82 },
-      { offset: '30%', color: '#1A6FA8', opacity: 0.35 },
+      { offset: '35%', color: '#1A6FA8', opacity: 0.24 },
       { offset: '100%', color: colors.glowDeep, opacity: 0 }
     ]
   },
   {
     cx: '52%',
     rx: '22%',
-    ry: '108%',
+    ry: '40%',
     stops: [
       { offset: '0%', color: '#56F4EA', opacity: 1 },
-      { offset: '8%', color: '#2DE2C5', opacity: 0.88 },
-      { offset: '22%', color: '#28B0E8', opacity: 0.62 },
-      { offset: '42%', color: '#1A5090', opacity: 0.28 },
+      { offset: '10%', color: '#2DE2C5', opacity: 0.86 },
+      { offset: '28%', color: '#28B0E8', opacity: 0.52 },
+      { offset: '48%', color: '#1A5090', opacity: 0.18 },
       { offset: '100%', color: colors.glowDeep, opacity: 0 }
     ]
   },
   {
     cx: '68%',
     rx: '16%',
-    ry: '86%',
+    ry: '34%',
     stops: [
       { offset: '0%', color: '#36E8DC', opacity: 0.9 },
-      { offset: '18%', color: '#22C8E8', opacity: 0.58 },
+      { offset: '22%', color: '#22C8E8', opacity: 0.48 },
       { offset: '100%', color: colors.glowDeep, opacity: 0 }
     ]
   },
   {
     cx: '90%',
     rx: '17%',
-    ry: '80%',
+    ry: '31%',
     stops: [
       { offset: '0%', color: '#2DE2C5', opacity: 0.84 },
-      { offset: '25%', color: '#1A88BE', opacity: 0.45 },
+      { offset: '28%', color: '#1A88BE', opacity: 0.32 },
       { offset: '100%', color: colors.glowDeep, opacity: 0 }
     ]
   }
