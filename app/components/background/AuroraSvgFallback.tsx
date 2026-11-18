@@ -6,9 +6,9 @@ import { colors } from '../../theme/colors'
 
 const LAYERS = [
   { dx: 0, dy: 0, scale: 1, opacity: 1 },
-  { dx: -22, dy: 14, scale: 1.06, opacity: 0.72 },
-  { dx: 26, dy: -10, scale: 1.04, opacity: 0.58 },
-  { dx: -12, dy: -18, scale: 0.98, opacity: 0.46 }
+  { dx: -22, dy: 4, scale: 1.06, opacity: 0.72 },
+  { dx: 26, dy: 2, scale: 1.04, opacity: 0.58 },
+  { dx: -12, dy: -6, scale: 0.98, opacity: 0.46 }
 ] as const
 
 /** Visible radial-stack fallback when WebGL aurora is unavailable or still booting. */
@@ -37,7 +37,7 @@ export function AuroraSvgFallback() {
         >
           <Svg width="100%" height="100%" style={StyleSheet.absoluteFillObject}>
             <Defs>
-              <RadialGradient id={`core${index}`} cx="50%" cy="68%" rx="76%" ry="52%">
+              <RadialGradient id={`core${index}`} cx="50%" cy="100%" rx="82%" ry="58%" fy="100%">
                 <Stop offset="0%" stopColor={colors.glowLime} stopOpacity="0.95" />
                 <Stop offset="26%" stopColor={colors.glowCyan} stopOpacity="0.62" />
                 <Stop offset="52%" stopColor={colors.glowTeal} stopOpacity="0.34" />
