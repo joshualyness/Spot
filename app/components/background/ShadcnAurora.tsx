@@ -16,15 +16,13 @@ export type ShadcnAuroraProps = {
   quality?: number
 }
 
-/**
- * Aurora backdrop. Uses Reanimated + SVG (always-on). WebGL (`expo-gl`) is not used by default
- * because it requires a native rebuild and often fails silently when the GLES 3.0 shader cannot link.
- */
+/** shadcn.io/background/aurora — uibrik curtain renderer (CPU port of first-frame.ts). */
 export function ShadcnAurora({
   drift = 0,
   speed = 0.25,
   amplitude = 0.15,
-  intensity = 2
+  intensity = 2,
+  scale = 0.55
 }: ShadcnAuroraProps) {
   return (
     <View style={styles.host} onLayout={onLayoutNoop}>
@@ -33,14 +31,13 @@ export function ShadcnAurora({
         speed={speed}
         amplitude={amplitude}
         intensity={intensity}
+        scale={scale}
       />
     </View>
   )
 }
 
-function onLayoutNoop(_e: LayoutChangeEvent) {
-  // Host only needs flex sizing; layers measure themselves.
-}
+function onLayoutNoop(_e: LayoutChangeEvent) {}
 
 const styles = StyleSheet.create({
   host: {
