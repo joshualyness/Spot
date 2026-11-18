@@ -1,0 +1,70 @@
+{
+  "name": "spot-api",
+  "version": "1.0.0",
+  "description": "Spot API",
+  "type": "module",
+  "license": "UNLICENSED",
+  "private": true,
+  "main": "./src/trpc/router.ts",
+  "exports": {
+    ".": "./src/trpc/router.ts",
+    "./router": "./src/trpc/router.ts"
+  },
+  "scripts": {
+    "build": "rm -rf dist && node scripts/build-handlers.mjs",
+    "zip": "scripts/zip.sh",
+    "dev": "tsx watch src/local-server.ts",
+    "start:local": "tsx src/local-server.ts",
+    "//dynamo": "regional DynamoDB table",
+    "plan:dynamo:dev": "scripts/plan.sh infra/regional/dynamo dev",
+    "plan:dynamo:staging": "scripts/plan.sh infra/regional/dynamo staging",
+    "apply:dynamo:dev": "scripts/apply.sh infra/regional/dynamo dev",
+    "apply:dynamo:staging": "scripts/apply.sh infra/regional/dynamo staging",
+    "deploy:dynamo:dev": "npm run build && npm run apply:dynamo:dev",
+    "deploy:dynamo:staging": "npm run build && npm run apply:dynamo:staging",
+    "destroy:dynamo:dev": "scripts/destroy.sh infra/regional/dynamo dev",
+    "destroy:dynamo:staging": "scripts/destroy.sh infra/regional/dynamo staging",
+    "//cognito": "Cognito user pool, SES, email-sender Lambda / queue",
+    "plan:cognito:dev": "scripts/plan.sh infra/global/cognito dev",
+    "plan:cognito:staging": "scripts/plan.sh infra/global/cognito staging",
+    "apply:cognito:dev": "scripts/apply.sh infra/global/cognito dev",
+    "apply:cognito:staging": "scripts/apply.sh infra/global/cognito staging",
+    "deploy:cognito:dev": "npm run build && npm run apply:cognito:dev",
+    "deploy:cognito:staging": "npm run build && npm run apply:cognito:staging",
+    "destroy:cognito:dev": "scripts/destroy.sh infra/global/cognito dev",
+    "destroy:cognito:staging": "scripts/destroy.sh infra/global/cognito staging",
+    "//api": "API Gateway + tRPC Lambda",
+    "plan:api:dev": "scripts/plan.sh infra/global/api dev",
+    "plan:api:staging": "scripts/plan.sh infra/global/api staging",
+    "apply:api:dev": "scripts/apply.sh infra/global/api dev",
+    "apply:api:staging": "scripts/apply.sh infra/global/api staging",
+    "deploy:api:dev": "npm run build && npm run apply:api:dev",
+    "deploy:api:staging": "npm run build && npm run apply:api:staging",
+    "destroy:api:dev": "scripts/destroy.sh infra/global/api dev",
+    "destroy:api:staging": "scripts/destroy.sh infra/global/api staging",
+    "ts:check": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "dependencies": {
+    "@aws-crypto/client-node": "^5.0.2",
+    "@aws-sdk/client-cognito-identity-provider": "^3.840.0",
+    "@aws-sdk/client-dynamodb": "^3.840.0",
+    "@aws-sdk/client-ses": "^3.840.0",
+    "@aws-sdk/lib-dynamodb": "^3.840.0",
+    "@trpc/server": "^11.0.0",
+    "electrodb": "^3.4.1",
+    "jsonwebtoken": "^9.0.2",
+    "jwks-rsa": "^3.2.0",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.97",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/node": "^24.13.3",
+    "esbuild": "~0.24.2",
+    "tsx": "^4.6.0",
+    "typescript": "^5.9.3"
+  }
+}

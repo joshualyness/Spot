@@ -1,22 +1,18 @@
 {
   "name": "spot",
-  "version": "1.0.0",
-  "main": "index.ts",
-  "dependencies": {
-    "expo": "~58.0.26",
-    "expo-status-bar": "~58.0.5",
-    "react": "19.3.0",
-    "react-native": "0.88.1"
-  },
-  "devDependencies": {
-    "@types/react": "~19.3.0",
-    "typescript": "~6.0.3"
-  },
+  "private": true,
+  "workspaces": [
+    "app",
+    "api"
+  ],
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "dev:api": "npm run dev -w spot-api",
+    "dev:app": "npm run start -w spot-app",
+    "ios": "npm run ios -w spot-app",
+    "prebuild:ios": "npm run prebuild:ios -w spot-app",
+    "build:api": "npm run build -w spot-api"
   },
-  "private": true
+  "engines": {
+    "node": ">=24"
+  }
 }

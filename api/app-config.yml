@@ -1,0 +1,13 @@
+# Custom domains are optional for now — API uses the default execute-api URL.
+# Fill these in when you attach a Route53 zone for Spot.
+shared: &shared
+  hosted_zone_id: ''
+dev:
+  <<: *shared
+  domain_name: ''
+staging:
+  <<: *shared
+  domain_name: ''
+production:
+  <<: *shared
+  domain_name: ''
