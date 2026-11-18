@@ -161,106 +161,137 @@ const FOOT_BASE: Peak = {
   cy: '102.8%',
   fx: '50%',
   fy: '104.8%',
-  rx: '126%',
-  ry: '19%',
+  rx: '132%',
+  ry: '20%',
   stops: footOuterStops(1)
 }
 
-/** Crests — wide spread in cy + ry (front layer only; outer blur keeps one band). */
+/**
+ * Front crests offset from curtain `cx` (curtains ~10/27/44/52/68/90) so layers do not stack.
+ * Extra edge caps for full-bleed coverage under horizontal bleed.
+ */
 const FOOT_WAVES: Peak[] = [
   {
-    cx: '10%',
-    cy: '100.95%',
-    fx: '10%',
-    fy: '102.05%',
-    rx: '26%',
-    ry: '10%',
-    stops: footOuterStops(0.88)
-  },
-  {
-    cx: '27%',
-    cy: '101.78%',
-    fx: '27%',
-    fy: '103.1%',
+    cx: '3%',
+    cy: '101.05%',
+    fx: '3%',
+    fy: '102.2%',
     rx: '28%',
-    ry: '26%',
-    stops: footOuterStops(1)
+    ry: '12%',
+    stops: footOuterStops(0.9)
   },
   {
-    cx: '44%',
-    cy: '100.88%',
-    fx: '44%',
-    fy: '102%',
-    rx: '24%',
-    ry: '8%',
-    stops: footOuterStops(0.82)
-  },
-  {
-    cx: '52%',
-    cy: '101.88%',
-    fx: '52%',
-    fy: '103.25%',
+    cx: '17%',
+    cy: '101.82%',
+    fx: '17%',
+    fy: '103.15%',
     rx: '30%',
-    ry: '30%',
+    ry: '27%',
+    stops: footOuterStops(0.98)
+  },
+  {
+    cx: '32%',
+    cy: '100.82%',
+    fx: '32%',
+    fy: '101.95%',
+    rx: '26%',
+    ry: '9%',
+    stops: footOuterStops(0.84)
+  },
+  {
+    cx: '46%',
+    cy: '101.95%',
+    fx: '46%',
+    fy: '103.35%',
+    rx: '32%',
+    ry: '32%',
     stops: footOuterStops(1)
   },
   {
-    cx: '68%',
-    cy: '101.42%',
-    fx: '68%',
-    fy: '102.72%',
-    rx: '26%',
-    ry: '19%',
-    stops: footOuterStops(0.93)
+    cx: '58%',
+    cy: '101.28%',
+    fx: '58%',
+    fy: '102.55%',
+    rx: '28%',
+    ry: '16%',
+    stops: footOuterStops(0.9)
   },
   {
-    cx: '90%',
-    cy: '101%',
-    fx: '90%',
-    fy: '102.15%',
-    rx: '25%',
-    ry: '9%',
-    stops: footOuterStops(0.85)
+    cx: '73%',
+    cy: '101.78%',
+    fx: '73%',
+    fy: '103.05%',
+    rx: '29%',
+    ry: '26%',
+    stops: footOuterStops(0.96)
+  },
+  {
+    cx: '87%',
+    cy: '100.92%',
+    fx: '87%',
+    fy: '102.05%',
+    rx: '27%',
+    ry: '11%',
+    stops: footOuterStops(0.86)
+  },
+  {
+    cx: '97%',
+    cy: '101.12%',
+    fx: '97%',
+    fy: '102.3%',
+    rx: '28%',
+    ry: '13%',
+    stops: footOuterStops(0.88)
   }
 ]
 
 const FOOT_CORE_BAND: Peak = {
   cx: '50%',
-  cy: '101.2%',
+  cy: '101.15%',
   fx: '50%',
-  fy: '102.4%',
-  rx: '104%',
-  ry: '11%',
+  fy: '102.35%',
+  rx: '112%',
+  ry: '12%',
   stops: footCoreStops(0.95)
 }
 
+/** Hot cores staggered vs curtains and vs outer wave valleys. */
 const FOOT_CORE_HOTSPOTS: Peak[] = [
   {
-    cx: '27%',
-    cy: '101.72%',
-    fx: '27%',
-    fy: '102.95%',
-    rx: '20%',
-    ry: '18%',
-    stops: footCoreStops(0.96)
+    cx: '20%',
+    cy: '101.68%',
+    fx: '20%',
+    fy: '102.88%',
+    rx: '22%',
+    ry: '19%',
+    stops: footCoreStops(0.94)
   },
   {
-    cx: '52%',
-    cy: '101.82%',
-    fx: '52%',
-    fy: '103.05%',
-    rx: '26%',
-    ry: '21%',
+    cx: '41%',
+    cy: '101.88%',
+    fx: '41%',
+    fy: '103.1%',
+    rx: '24%',
+    ry: '22%',
     stops: footCoreStops(1)
   },
   {
-    cx: '72%',
-    cy: '101.12%',
-    fx: '72%',
-    fy: '102.35%',
-    rx: '19%',
-    ry: '11%',
-    stops: footCoreStops(0.84)
+    cx: '63%',
+    cy: '101.45%',
+    fx: '63%',
+    fy: '102.68%',
+    rx: '21%',
+    ry: '15%',
+    stops: footCoreStops(0.88)
+  },
+  {
+    cx: '82%',
+    cy: '101.22%',
+    fx: '82%',
+    fy: '102.42%',
+    rx: '20%',
+    ry: '13%',
+    stops: footCoreStops(0.86)
   }
 ]
 
