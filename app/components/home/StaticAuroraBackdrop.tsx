@@ -16,268 +16,327 @@ type Props = {
 
 type PeakSpec = {
   cx: string
+  /** Default bottom anchor `100%`. */
+  cy?: string
   rx: string
   ry: string
   stops: readonly { offset: string; color: string; opacity: number }[]
 }
 
-type BaseBlobSpec = PeakSpec & {
-  /** Vertical anchor — % from top; 100% = panel bottom. */
-  cy: string
-  /** Focal point pulls the hot core off a perfect baseline. */
+type FocalPeakSpec = PeakSpec & {
   fx: string
   fy: string
 }
 
-/** Bottom-anchored peaks (reference Agentix layout). */
-const PEAKS: PeakSpec[] = [
+/** Soft indigo / royal washes — must stay translucent so it is not one flat blue. */
+const BACK_ATMOSPHERE: PeakSpec[] = [
   {
-    cx: '8%',
-    rx: '30%',
-    ry: '48%',
+    cx: '18%',
+    cy: '72%',
+    rx: '52%',
+    ry: '58%',
     stops: [
-      { offset: '0%', color: colors.glowLime, opacity: 0.55 },
-      { offset: '22%', color: colors.glowCyan, opacity: 0.42 },
-      { offset: '55%', color: colors.glowTeal, opacity: 0.2 },
+      { offset: '0%', color: '#121A3D', opacity: 0.55 },
+      { offset: '40%', color: '#1A2F6E', opacity: 0.28 },
       { offset: '100%', color: colors.glowDeep, opacity: 0 }
     ]
   },
   {
-    cx: '26%',
-    rx: '28%',
+    cx: '48%',
+    cy: '58%',
+    rx: '62%',
+    ry: '68%',
+    stops: [
+      { offset: '0%', color: '#1C3D8F', opacity: 0.42 },
+      { offset: '35%', color: '#244FB8', opacity: 0.22 },
+      { offset: '100%', color: colors.glowDeep, opacity: 0 }
+    ]
+  },
+  {
+    cx: '76%',
+    cy: '68%',
+    rx: '48%',
+    ry: '54%',
+    stops: [
+      { offset: '0%', color: '#0F2848', opacity: 0.5 },
+      { offset: '38%', color: '#1A4A7A', opacity: 0.26 },
+      { offset: '100%', color: colors.glowDeep, opacity: 0 }
+    ]
+  },
+  {
+    cx: '92%',
+    cy: '78%',
+    rx: '44%',
+    ry: '42%',
+    stops: [
+      { offset: '0%', color: '#152A52', opacity: 0.38 },
+      { offset: '100%', color: colors.glowDeep, opacity: 0 }
+    ]
+  }
+]
+
+/** Deeper bottom glow — teal undertone, low peak opacity so layers do not stack flat. */
+const BACK_PEAKS: PeakSpec[] = [
+  {
+    cx: '10%',
+    rx: '34%',
+    ry: '58%',
+    stops: [
+      { offset: '0%', color: '#1A6F8F', opacity: 0.32 },
+      { offset: '45%', color: '#1E3A7A', opacity: 0.18 },
+      { offset: '100%', color: colors.glowDeep, opacity: 0 }
+    ]
+  },
+  {
+    cx: '30%',
+    rx: '32%',
+    ry: '62%',
+    stops: [
+      { offset: '0%', color: '#2288AA', opacity: 0.28 },
+      { offset: '42%', color: '#243B7A', opacity: 0.16 },
+      { offset: '100%', color: colors.glowDeep, opacity: 0 }
+    ]
+  },
+  {
+    cx: '50%',
+    rx: '36%',
+    ry: '68%',
+    stops: [
+      { offset: '0%', color: '#2A5ECC', opacity: 0.3 },
+      { offset: '38%', color: '#1A3D8F', opacity: 0.14 },
+      { offset: '100%', color: colors.glowDeep, opacity: 0 }
+    ]
+  },
+  {
+    cx: '70%',
+    rx: '30%',
+    ry: '56%',
+    stops: [
+      { offset: '0%', color: '#1A6F8F', opacity: 0.26 },
+      { offset: '100%', color: colors.glowDeep, opacity: 0 }
+    ]
+  },
+  {
+    cx: '90%',
+    rx: '34%',
     ry: '52%',
     stops: [
-      { offset: '0%', color: '#C8F543', opacity: 0.72 },
-      { offset: '18%', color: colors.glowCyan, opacity: 0.5 },
-      { offset: '48%', color: '#0E8A7A', opacity: 0.26 },
-      { offset: '100%', color: colors.glowDeep, opacity: 0 }
-    ]
-  },
-  {
-    cx: '44%',
-    rx: '32%',
-    ry: '64%',
-    stops: [
-      { offset: '0%', color: colors.glowLime, opacity: 0.88 },
-      { offset: '14%', color: colors.glowCyan, opacity: 0.62 },
-      { offset: '32%', color: colors.glowTeal, opacity: 0.44 },
-      { offset: '58%', color: '#2F5BD4', opacity: 0.32 },
-      { offset: '100%', color: colors.glowDeep, opacity: 0 }
-    ]
-  },
-  {
-    cx: '62%',
-    rx: '28%',
-    ry: '50%',
-    stops: [
-      { offset: '0%', color: '#B8E83A', opacity: 0.65 },
-      { offset: '25%', color: '#2DE2C5', opacity: 0.4 },
-      { offset: '52%', color: '#3D6DFF', opacity: 0.3 },
-      { offset: '100%', color: colors.glowDeep, opacity: 0 }
-    ]
-  },
-  {
-    cx: '80%',
-    rx: '30%',
-    ry: '46%',
-    stops: [
-      { offset: '0%', color: colors.glowCyan, opacity: 0.58 },
-      { offset: '30%', color: '#1A6F8F', opacity: 0.35 },
-      { offset: '62%', color: '#3D6DFF', opacity: 0.28 },
-      { offset: '100%', color: colors.glowDeep, opacity: 0 }
-    ]
-  },
-  {
-    cx: '94%',
-    rx: '36%',
-    ry: '44%',
-    stops: [
-      { offset: '0%', color: colors.glowCyan, opacity: 0.52 },
-      { offset: '28%', color: '#2F5BD4', opacity: 0.3 },
+      { offset: '0%', color: '#1E4A8A', opacity: 0.28 },
       { offset: '100%', color: colors.glowDeep, opacity: 0 }
     ]
   }
 ]
 
-const FLOOR: PeakSpec = {
-  cx: '50%',
-  rx: '112%',
-  ry: '26%',
-  stops: [
-    { offset: '0%', color: colors.glowLime, opacity: 0.62 },
-    { offset: '30%', color: colors.glowCyan, opacity: 0.28 },
-    { offset: '100%', color: colors.glowDeep, opacity: 0 }
-  ]
-}
-
-/** Brighter front pass — 6 curtains with strong height spread. */
-const FRONT_PEAKS: PeakSpec[] = [
+/** Dark gutters between curtains — pushes peak contrast without a flat back fill. */
+const VALLEY_SHADES: PeakSpec[] = [
   {
-    cx: '9%',
-    rx: '30%',
-    ry: '42%',
+    cx: '17%',
+    rx: '11%',
+    ry: '78%',
     stops: [
-      { offset: '0%', color: '#D6FF4B', opacity: 0.78 },
-      { offset: '28%', color: colors.glowCyan, opacity: 0.45 },
-      { offset: '100%', color: colors.glowDeep, opacity: 0 }
+      { offset: '0%', color: colors.black, opacity: 0.62 },
+      { offset: '35%', color: colors.black, opacity: 0.28 },
+      { offset: '100%', color: colors.black, opacity: 0 }
     ]
   },
   {
-    cx: '23%',
-    rx: '32%',
+    cx: '32%',
+    rx: '10%',
+    ry: '82%',
+    stops: [
+      { offset: '0%', color: colors.black, opacity: 0.58 },
+      { offset: '100%', color: colors.black, opacity: 0 }
+    ]
+  },
+  {
+    cx: '43%',
+    rx: '9%',
+    ry: '80%',
+    stops: [
+      { offset: '0%', color: colors.black, opacity: 0.55 },
+      { offset: '100%', color: colors.black, opacity: 0 }
+    ]
+  },
+  {
+    cx: '58%',
+    rx: '11%',
+    ry: '84%',
+    stops: [
+      { offset: '0%', color: colors.black, opacity: 0.6 },
+      { offset: '100%', color: colors.black, opacity: 0 }
+    ]
+  },
+  {
+    cx: '74%',
+    rx: '10%',
+    ry: '76%',
+    stops: [
+      { offset: '0%', color: colors.black, opacity: 0.52 },
+      { offset: '100%', color: colors.black, opacity: 0 }
+    ]
+  },
+  {
+    cx: '86%',
+    rx: '11%',
     ry: '74%',
     stops: [
-      { offset: '0%', color: '#C8F543', opacity: 0.82 },
-      { offset: '20%', color: colors.glowCyan, opacity: 0.55 },
-      { offset: '45%', color: colors.glowTeal, opacity: 0.32 },
+      { offset: '0%', color: colors.black, opacity: 0.5 },
+      { offset: '100%', color: colors.black, opacity: 0 }
+    ]
+  }
+]
+
+/** Narrow tapered teal / cyan columns (middle layer). */
+const CURTAIN_PEAKS: PeakSpec[] = [
+  {
+    cx: '9%',
+    rx: '16%',
+    ry: '96%',
+    stops: [
+      { offset: '0%', color: '#3FE8D8', opacity: 0.95 },
+      { offset: '10%', color: '#2DE2C5', opacity: 0.88 },
+      { offset: '22%', color: '#1BA8D4', opacity: 0.62 },
+      { offset: '38%', color: '#1A6FA8', opacity: 0.32 },
+      { offset: '58%', color: '#143D6E', opacity: 0.12 },
       { offset: '100%', color: colors.glowDeep, opacity: 0 }
     ]
   },
   {
-    cx: '37%',
-    rx: '28%',
-    ry: '48%',
+    cx: '24%',
+    rx: '18%',
+    ry: '102%',
     stops: [
-      { offset: '0%', color: colors.glowLime, opacity: 0.7 },
-      { offset: '35%', color: '#1E9E8F', opacity: 0.38 },
+      { offset: '0%', color: '#4AF0E0', opacity: 1 },
+      { offset: '8%', color: '#2DE2C5', opacity: 0.92 },
+      { offset: '20%', color: '#22C5E8', opacity: 0.72 },
+      { offset: '36%', color: '#1A7FBA', opacity: 0.38 },
+      { offset: '100%', color: colors.glowDeep, opacity: 0 }
+    ]
+  },
+  {
+    cx: '39%',
+    rx: '15%',
+    ry: '88%',
+    stops: [
+      { offset: '0%', color: '#2DE2C5', opacity: 0.9 },
+      { offset: '18%', color: '#1EC4E0', opacity: 0.65 },
+      { offset: '42%', color: '#1A5A94', opacity: 0.28 },
       { offset: '100%', color: colors.glowDeep, opacity: 0 }
     ]
   },
   {
     cx: '52%',
-    rx: '42%',
-    ry: '88%',
+    rx: '20%',
+    ry: '108%',
     stops: [
-      { offset: '0%', color: colors.glowLime, opacity: 0.9 },
-      { offset: '12%', color: colors.glowCyan, opacity: 0.68 },
-      { offset: '30%', color: colors.glowTeal, opacity: 0.5 },
-      { offset: '55%', color: '#3568E8', opacity: 0.38 },
+      { offset: '0%', color: '#56F2E6', opacity: 1 },
+      { offset: '6%', color: '#2DE2C5', opacity: 0.94 },
+      { offset: '16%', color: '#28B8EA', opacity: 0.78 },
+      { offset: '32%', color: '#2088CC', opacity: 0.48 },
+      { offset: '52%', color: '#1A5090', opacity: 0.22 },
       { offset: '100%', color: colors.glowDeep, opacity: 0 }
     ]
   },
   {
     cx: '66%',
-    rx: '34%',
-    ry: '66%',
+    rx: '17%',
+    ry: '94%',
     stops: [
-      { offset: '0%', color: '#B8E83A', opacity: 0.76 },
-      { offset: '22%', color: '#2DE2C5', opacity: 0.48 },
-      { offset: '50%', color: '#3D6DFF', opacity: 0.34 },
+      { offset: '0%', color: '#3AE8DC', opacity: 0.96 },
+      { offset: '14%', color: '#22CFE8', opacity: 0.7 },
+      { offset: '40%', color: '#1A6CB0', opacity: 0.3 },
       { offset: '100%', color: colors.glowDeep, opacity: 0 }
     ]
   },
   {
     cx: '88%',
-    rx: '36%',
-    ry: '48%',
+    rx: '18%',
+    ry: '90%',
     stops: [
-      { offset: '0%', color: colors.glowCyan, opacity: 0.72 },
-      { offset: '32%', color: '#1A6F8F', opacity: 0.4 },
-      { offset: '58%', color: '#4D7CFF', opacity: 0.32 },
+      { offset: '0%', color: '#2DE2C5', opacity: 0.88 },
+      { offset: '20%', color: '#1A9FD4', opacity: 0.55 },
       { offset: '100%', color: colors.glowDeep, opacity: 0 }
     ]
   },
   {
     cx: '96%',
-    rx: '38%',
-    ry: '42%',
+    rx: '16%',
+    ry: '82%',
     stops: [
-      { offset: '0%', color: '#D6FF4B', opacity: 0.68 },
-      { offset: '26%', color: colors.glowCyan, opacity: 0.4 },
+      { offset: '0%', color: '#28D8C8', opacity: 0.82 },
       { offset: '100%', color: colors.glowDeep, opacity: 0 }
     ]
   }
 ]
 
-function baseBlobStops(strength: number): PeakSpec['stops'] {
-  const hot = Math.min(1, strength)
-  return [
+/** One wide shallow band — blurs into a single lime foot across the full width. */
+const FOOT_TRAY: FocalPeakSpec = {
+  cx: '50%',
+  cy: '102%',
+  fx: '50%',
+  fy: '104.5%',
+  rx: '118%',
+  ry: '17%',
+  stops: [
     { offset: '0%', color: '#FFFFFF', opacity: 1 },
-    { offset: '6%', color: '#FFFFFF', opacity: 0.98 * hot },
-    { offset: '14%', color: '#FAFFDC', opacity: 0.9 * hot },
-    { offset: '28%', color: '#F0FFAA', opacity: 0.55 },
-    { offset: '52%', color: colors.glowLime, opacity: 0.22 },
+    { offset: '5%', color: '#FFFFEE', opacity: 0.98 },
+    { offset: '12%', color: '#F4FFAA', opacity: 0.94 },
+    { offset: '24%', color: '#D6FF4B', opacity: 0.88 },
+    { offset: '42%', color: '#B8E83A', opacity: 0.62 },
+    { offset: '68%', color: '#4AD4B0', opacity: 0.28 },
     { offset: '100%', color: colors.glowDeep, opacity: 0 }
   ]
 }
 
-/** Soft rounded caps where each front curtain meets the bottom edge. */
-const FRONT_BASE_BLOBS: BaseBlobSpec[] = [
-  {
-    cx: '9%',
-    cy: '101.5%',
-    fx: '9%',
-    fy: '102.8%',
-    rx: '18%',
-    ry: '12%',
-    stops: baseBlobStops(0.92)
-  },
-  {
-    cx: '23%',
-    cy: '101.2%',
-    fx: '23%',
-    fy: '102.6%',
-    rx: '19%',
-    ry: '12%',
-    stops: baseBlobStops(0.98)
-  },
-  {
-    cx: '37%',
-    cy: '101.4%',
-    fx: '37%',
-    fy: '102.7%',
-    rx: '17%',
-    ry: '11%',
-    stops: baseBlobStops(0.9)
-  },
-  {
-    cx: '52%',
-    cy: '101%',
-    fx: '52%',
-    fy: '102.5%',
-    rx: '20%',
-    ry: '13%',
-    stops: baseBlobStops(1)
-  },
-  {
-    cx: '66%',
-    cy: '101.3%',
-    fx: '66%',
-    fy: '102.7%',
-    rx: '18%',
-    ry: '12%',
-    stops: baseBlobStops(0.96)
-  },
-  {
-    cx: '88%',
-    cy: '101.2%',
-    fx: '88%',
-    fy: '102.6%',
-    rx: '18%',
-    ry: '11%',
-    stops: baseBlobStops(0.91)
-  },
-  {
-    cx: '96%',
-    cy: '101.4%',
-    fx: '96%',
-    fy: '102.8%',
-    rx: '20%',
-    ry: '12%',
-    stops: baseBlobStops(0.88)
-  }
-]
+const BACK_BLUR = 12
+const VALLEY_BLUR = 4
+const CURTAIN_BLUR = 5
+const FOOT_BLUR = 22
 
-const BACK_BLUR = 10
-/** Front blur is 30% softer than back (smaller stdDeviation). */
-const FRONT_BLUR = 7
-/** Extra-heavy blur merges the bottom caps into one contiguous glow. */
-const FRONT_BASE_BLUR = 15
+function peakGradientId(prefix: string, index: number) {
+  return `${prefix}${index}`
+}
+
+function renderGradientDefs(peaks: PeakSpec[], prefix: string) {
+  return peaks.map((peak, index) => (
+    <RadialGradient
+      key={`${prefix}-${index}`}
+      id={peakGradientId(prefix, index)}
+      cx={peak.cx}
+      cy={peak.cy ?? '100%'}
+      rx={peak.rx}
+      ry={peak.ry}
+    >
+      {peak.stops.map((stop, i) => (
+        <Stop
+          key={i}
+          offset={stop.offset}
+          stopColor={stop.color}
+          stopOpacity={stop.opacity}
+        />
+      ))}
+    </RadialGradient>
+  ))
+}
+
+function renderPeakGroup(
+  peaks: PeakSpec[],
+  prefix: string,
+  w: number,
+  h: number
+) {
+  return peaks.map((_, index) => (
+    <Rect
+      key={`${prefix}-rect-${index}`}
+      width={w}
+      height={h}
+      fill={`url(#${peakGradientId(prefix, index)})`}
+    />
+  ))
+}
 
 export function StaticAuroraBackdrop({ width, height }: Props) {
   if (width <= 0 || height <= 0) return null
-
-  const layers = [FLOOR, ...PEAKS]
 
   return (
     <Svg width={width} height={height}>
@@ -285,117 +344,61 @@ export function StaticAuroraBackdrop({ width, height }: Props) {
         <Filter id="auroraBack" x="-50%" y="-35%" width="200%" height="170%">
           <FeGaussianBlur in="SourceGraphic" stdDeviation={BACK_BLUR} />
         </Filter>
-        <Filter id="auroraFront" x="-50%" y="-30%" width="200%" height="160%">
-          <FeGaussianBlur in="SourceGraphic" stdDeviation={FRONT_BLUR} />
+        <Filter id="auroraValley" x="-40%" y="-25%" width="180%" height="150%">
+          <FeGaussianBlur in="SourceGraphic" stdDeviation={VALLEY_BLUR} />
         </Filter>
-        <Filter id="auroraFrontBase" x="-50%" y="-20%" width="200%" height="160%">
-          <FeGaussianBlur in="SourceGraphic" stdDeviation={FRONT_BASE_BLUR} />
+        <Filter id="auroraCurtain" x="-50%" y="-35%" width="200%" height="175%">
+          <FeGaussianBlur in="SourceGraphic" stdDeviation={CURTAIN_BLUR} />
         </Filter>
-        <RadialGradient id="auroraCenterShade" cx="50%" cy="38%" rx="58%" ry="52%">
-          <Stop offset="0%" stopColor={colors.black} stopOpacity="0.72" />
-          <Stop offset="55%" stopColor={colors.black} stopOpacity="0.35" />
-          <Stop offset="100%" stopColor={colors.black} stopOpacity="0" />
-        </RadialGradient>
+        <Filter id="auroraFoot" x="-55%" y="-30%" width="210%" height="160%">
+          <FeGaussianBlur in="SourceGraphic" stdDeviation={FOOT_BLUR} />
+        </Filter>
         <RadialGradient id="auroraTopWash" cx="50%" cy="8%" rx="92%" ry="48%">
-          <Stop offset="0%" stopColor="#1A4A62" stopOpacity="0.18" />
+          <Stop offset="0%" stopColor="#1A4A62" stopOpacity="0.14" />
           <Stop offset="100%" stopColor={colors.black} stopOpacity="0" />
         </RadialGradient>
-        {layers.map((peak, index) => (
-          <RadialGradient
-            key={`peak-${index}`}
-            id={`auroraPeak${index}`}
-            cx={peak.cx}
-            cy="100%"
-            rx={peak.rx}
-            ry={peak.ry}
-          >
-            {peak.stops.map((stop, i) => (
-              <Stop
-                key={i}
-                offset={stop.offset}
-                stopColor={stop.color}
-                stopOpacity={stop.opacity}
-              />
-            ))}
-          </RadialGradient>
-        ))}
-        {FRONT_PEAKS.map((peak, index) => (
-          <RadialGradient
-            key={`front-peak-${index}`}
-            id={`auroraFrontPeak${index}`}
-            cx={peak.cx}
-            cy="100%"
-            rx={peak.rx}
-            ry={peak.ry}
-          >
-            {peak.stops.map((stop, i) => (
-              <Stop
-                key={i}
-                offset={stop.offset}
-                stopColor={stop.color}
-                stopOpacity={stop.opacity}
-              />
-            ))}
-          </RadialGradient>
-        ))}
-        {FRONT_BASE_BLOBS.map((peak, index) => (
-          <RadialGradient
-            key={`front-base-${index}`}
-            id={`auroraFrontBase${index}`}
-            cx={peak.cx}
-            cy={peak.cy}
-            fx={peak.fx}
-            fy={peak.fy}
-            rx={peak.rx}
-            ry={peak.ry}
-          >
-            {peak.stops.map((stop, i) => (
-              <Stop
-                key={i}
-                offset={stop.offset}
-                stopColor={stop.color}
-                stopOpacity={stop.opacity}
-              />
-            ))}
-          </RadialGradient>
-        ))}
+        {renderGradientDefs(BACK_ATMOSPHERE, 'auroraAtmo')}
+        {renderGradientDefs(BACK_PEAKS, 'auroraBackPeak')}
+        {renderGradientDefs(VALLEY_SHADES, 'auroraValley')}
+        {renderGradientDefs(CURTAIN_PEAKS, 'auroraCurtain')}
+        <RadialGradient
+          id="auroraFoot"
+          cx={FOOT_TRAY.cx}
+          cy={FOOT_TRAY.cy}
+          fx={FOOT_TRAY.fx}
+          fy={FOOT_TRAY.fy}
+          rx={FOOT_TRAY.rx}
+          ry={FOOT_TRAY.ry}
+        >
+          {FOOT_TRAY.stops.map((stop, i) => (
+            <Stop
+              key={i}
+              offset={stop.offset}
+              stopColor={stop.color}
+              stopOpacity={stop.opacity}
+            />
+          ))}
+        </RadialGradient>
       </Defs>
 
-      <G filter="url(#auroraBack)" opacity={0.96}>
-        {layers.map((_, index) => (
-          <Rect
-            key={`back-${index}`}
-            width={width}
-            height={height}
-            fill={`url(#auroraPeak${index})`}
-          />
-        ))}
+      <G filter="url(#auroraBack)" opacity={0.88}>
+        {renderPeakGroup(BACK_ATMOSPHERE, 'auroraAtmo', width, height)}
+        {renderPeakGroup(BACK_PEAKS, 'auroraBackPeak', width, height)}
       </G>
 
-      <G filter="url(#auroraFront)" opacity={0.58}>
-        {FRONT_PEAKS.map((_, index) => (
-          <Rect
-            key={`front-${index}`}
-            width={width}
-            height={height}
-            fill={`url(#auroraFrontPeak${index})`}
-          />
-        ))}
+      <G filter="url(#auroraValley)" opacity={0.85}>
+        {renderPeakGroup(VALLEY_SHADES, 'auroraValley', width, height)}
       </G>
 
-      <G filter="url(#auroraFrontBase)" opacity={0.93}>
-        {FRONT_BASE_BLOBS.map((_, index) => (
-          <Rect
-            key={`front-base-${index}`}
-            width={width}
-            height={height}
-            fill={`url(#auroraFrontBase${index})`}
-          />
-        ))}
+      <G filter="url(#auroraCurtain)" opacity={0.92}>
+        {renderPeakGroup(CURTAIN_PEAKS, 'auroraCurtain', width, height)}
+      </G>
+
+      <G filter="url(#auroraFoot)" opacity={0.97}>
+        <Rect width={width} height={height} fill="url(#auroraFoot)" />
       </G>
 
       <Rect width={width} height={height} fill="url(#auroraTopWash)" />
-      <Rect width={width} height={height} fill="url(#auroraCenterShade)" />
     </Svg>
   )
 }
