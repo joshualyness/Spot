@@ -115,15 +115,20 @@ export function sampleGlowScreen(
   }
 }
 
+export type AuroraGradientStop = {
+  offset: number
+  color: string
+  opacity: number
+}
+
 export function columnGradientStops(
   xNorm: number,
   t: number,
   aspect: number,
   pass: 'curtain' | 'screen'
-) {
+): AuroraGradientStop[] {
   const steps = 11
-  const outColors: string[] = []
-  const outPos: number[] = []
+  const stops: AuroraGradientStop[] = []
 
   for (let s = 0; s <= steps; s++) {
     const yNorm = s / steps
@@ -131,8 +136,11 @@ export function columnGradientStops(
       pass === 'curtain'
         ? sampleGlow(xNorm, yNorm, t, aspect)
         : sampleGlowScreen(xNorm, yNorm, t, aspect)
-    outPos.push(1 - yNorm)
-    outColors.push(`rgba(${g.r | 0},${g.g | 0},${g.b | 0},${g.a.toFixed(3)})`)
+    stops.push({
+      offset: 1 - yNorm,
+      color: `rgb(${g.r | 0},${g.g | 0},${g.b | 0})`,
+      opacity: g.a
+    })
   }
-  return { colors: outColors, positions: outPos }
+  return stops
 }

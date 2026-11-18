@@ -1,10 +1,10 @@
 import { LinearGradient } from 'expo-linear-gradient'
 import { useEffect, useState } from 'react'
-import { AccessibilityInfo, Platform, View, type LayoutChangeEvent } from 'react-native'
+import { AccessibilityInfo, View, type LayoutChangeEvent } from 'react-native'
 import { runOnJS, type SharedValue, useAnimatedReaction } from 'react-native-reanimated'
 import { StyleSheet } from 'react-native-unistyles'
 import Svg, { Defs, RadialGradient, Rect, Stop } from 'react-native-svg'
-import { SkiaAuroraField } from './home/SkiaAuroraField'
+import { SvgAuroraField } from './home/SvgAuroraField'
 import { TAB_PARALLAX_ORIGIN } from './InsightTabs'
 import { AURORA_GAP_ABOVE_DOCK, auroraBottomInset } from './BottomPills'
 import { colors } from '../theme/colors'
@@ -71,8 +71,6 @@ export function AuroraGlow({ progress, safeBottom = 0 }: Props) {
     if (width > 0 && height > 0) setSize({ width, height })
   }
 
-  const useSkia = Platform.OS !== 'web'
-
   return (
     <View pointerEvents="none" style={[styles.root, { bottom }]}>
       <View style={styles.shell} onLayout={onLayout}>
@@ -82,24 +80,27 @@ export function AuroraGlow({ progress, safeBottom = 0 }: Props) {
           style={StyleSheet.absoluteFillObject}
         />
 
-        {size.width > 0 &&
-          (useSkia ? (
-            <View style={[styles.glow, { transform: [{ translateX: drift * 8 }] }]}>
-              <SkiaAuroraField
-                width={size.width}
-                height={size.height}
-                drift={drift}
-                animate={!reduceMotion}
-              />
-            </View>
-          ) : (
+        {size.width > 0 && (
+          <View style={[styles.glow, { transform: [{ translateX: drift * 8 }] }]}>
+            <SvgAuroraField
+              width={size.width}
+              height={size.height}
+              drift={drift}
+              animate={!reduceMotion}
+            />
+          </View>
+        )}
+
+        {size.width > 0 && (
+          <View pointerEvents="none" style={styles.baseRadial}>
             <LegacyRadialGlow width={size.width} height={size.height} drift={drift} />
-          ))}
+          </View>
+        )}
 
         <LinearGradient
           pointerEvents="none"
-          colors={['transparent', 'rgba(0,0,0,0.18)', 'rgba(0,0,0,0.55)', colors.black]}
-          locations={[0, 0.42, 0.78, 1]}
+          colors={['transparent', 'rgba(0,0,0,0.12)', 'rgba(0,0,0,0.42)', colors.black]}
+          locations={[0, 0.38, 0.72, 1]}
           style={StyleSheet.absoluteFillObject}
         />
       </View>
@@ -126,5 +127,9 @@ const styles = StyleSheet.create({
   },
   glow: {
     ...StyleSheet.absoluteFillObject
+  },
+  baseRadial: {
+    ...StyleSheet.absoluteFillObject,
+    opacity: 0.35
   }
 })
