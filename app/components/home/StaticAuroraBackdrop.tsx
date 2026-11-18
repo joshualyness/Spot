@@ -166,61 +166,61 @@ const FOOT_BASE: Peak = {
   stops: footOuterStops(1)
 }
 
-/** Crests — shared floor, varied cy + ry for wavy top (still merges at outer blur). */
+/** Crests — wide spread in cy + ry (front layer only; outer blur keeps one band). */
 const FOOT_WAVES: Peak[] = [
   {
     cx: '10%',
-    cy: '101.2%',
+    cy: '100.95%',
     fx: '10%',
-    fy: '102.45%',
+    fy: '102.05%',
     rx: '26%',
-    ry: '12%',
-    stops: footOuterStops(0.9)
+    ry: '10%',
+    stops: footOuterStops(0.88)
   },
   {
     cx: '27%',
-    cy: '101.55%',
+    cy: '101.78%',
     fx: '27%',
-    fy: '102.85%',
+    fy: '103.1%',
     rx: '28%',
-    ry: '21%',
-    stops: footOuterStops(0.98)
+    ry: '26%',
+    stops: footOuterStops(1)
   },
   {
     cx: '44%',
-    cy: '101.1%',
+    cy: '100.88%',
     fx: '44%',
-    fy: '102.35%',
+    fy: '102%',
     rx: '24%',
-    ry: '10%',
-    stops: footOuterStops(0.86)
+    ry: '8%',
+    stops: footOuterStops(0.82)
   },
   {
     cx: '52%',
-    cy: '101.65%',
+    cy: '101.88%',
     fx: '52%',
-    fy: '102.95%',
+    fy: '103.25%',
     rx: '30%',
-    ry: '24%',
+    ry: '30%',
     stops: footOuterStops(1)
   },
   {
     cx: '68%',
-    cy: '101.38%',
+    cy: '101.42%',
     fx: '68%',
-    fy: '102.65%',
+    fy: '102.72%',
     rx: '26%',
-    ry: '17%',
-    stops: footOuterStops(0.94)
+    ry: '19%',
+    stops: footOuterStops(0.93)
   },
   {
     cx: '90%',
-    cy: '101.15%',
+    cy: '101%',
     fx: '90%',
-    fy: '102.4%',
+    fy: '102.15%',
     rx: '25%',
-    ry: '11%',
-    stops: footOuterStops(0.88)
+    ry: '9%',
+    stops: footOuterStops(0.85)
   }
 ]
 
@@ -237,30 +237,30 @@ const FOOT_CORE_BAND: Peak = {
 const FOOT_CORE_HOTSPOTS: Peak[] = [
   {
     cx: '27%',
-    cy: '101.48%',
+    cy: '101.72%',
     fx: '27%',
-    fy: '102.65%',
+    fy: '102.95%',
     rx: '20%',
-    ry: '15%',
-    stops: footCoreStops(0.94)
+    ry: '18%',
+    stops: footCoreStops(0.96)
   },
   {
     cx: '52%',
-    cy: '101.55%',
+    cy: '101.82%',
     fx: '52%',
-    fy: '102.75%',
+    fy: '103.05%',
     rx: '26%',
-    ry: '17%',
+    ry: '21%',
     stops: footCoreStops(1)
   },
   {
     cx: '72%',
-    cy: '101.28%',
+    cy: '101.12%',
     fx: '72%',
-    fy: '102.45%',
+    fy: '102.35%',
     rx: '19%',
-    ry: '12%',
-    stops: footCoreStops(0.86)
+    ry: '11%',
+    stops: footCoreStops(0.84)
   }
 ]
 
