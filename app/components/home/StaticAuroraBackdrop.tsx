@@ -103,67 +103,67 @@ const FLOOR: PeakSpec = {
 /** Brighter front pass — 6 curtains with strong height spread. */
 const FRONT_PEAKS: PeakSpec[] = [
   {
-    cx: '6%',
-    rx: '24%',
-    ry: '32%',
+    cx: '9%',
+    rx: '30%',
+    ry: '42%',
     stops: [
       { offset: '0%', color: '#D6FF4B', opacity: 0.78 },
-      { offset: '22%', color: colors.glowCyan, opacity: 0.4 },
-      { offset: '55%', color: colors.glowDeep, opacity: 0 }
+      { offset: '28%', color: colors.glowCyan, opacity: 0.45 },
+      { offset: '100%', color: colors.glowDeep, opacity: 0 }
     ]
   },
   {
-    cx: '21%',
-    rx: '26%',
-    ry: '44%',
+    cx: '23%',
+    rx: '32%',
+    ry: '74%',
     stops: [
       { offset: '0%', color: '#C8F543', opacity: 0.82 },
-      { offset: '18%', color: colors.glowCyan, opacity: 0.5 },
-      { offset: '40%', color: colors.glowTeal, opacity: 0.28 },
+      { offset: '20%', color: colors.glowCyan, opacity: 0.55 },
+      { offset: '45%', color: colors.glowTeal, opacity: 0.32 },
       { offset: '100%', color: colors.glowDeep, opacity: 0 }
     ]
   },
   {
-    cx: '36%',
-    rx: '24%',
-    ry: '34%',
+    cx: '37%',
+    rx: '28%',
+    ry: '48%',
     stops: [
       { offset: '0%', color: colors.glowLime, opacity: 0.7 },
-      { offset: '28%', color: '#1E9E8F', opacity: 0.34 },
+      { offset: '35%', color: '#1E9E8F', opacity: 0.38 },
       { offset: '100%', color: colors.glowDeep, opacity: 0 }
     ]
   },
   {
-    cx: '51%',
-    rx: '28%',
-    ry: '56%',
+    cx: '52%',
+    rx: '42%',
+    ry: '88%',
     stops: [
-      { offset: '0%', color: colors.glowLime, opacity: 0.88 },
-      { offset: '14%', color: colors.glowCyan, opacity: 0.58 },
-      { offset: '32%', color: colors.glowTeal, opacity: 0.38 },
-      { offset: '52%', color: '#3568E8', opacity: 0.28 },
+      { offset: '0%', color: colors.glowLime, opacity: 0.9 },
+      { offset: '12%', color: colors.glowCyan, opacity: 0.68 },
+      { offset: '30%', color: colors.glowTeal, opacity: 0.5 },
+      { offset: '55%', color: '#3568E8', opacity: 0.38 },
       { offset: '100%', color: colors.glowDeep, opacity: 0 }
     ]
   },
   {
     cx: '66%',
-    rx: '26%',
-    ry: '42%',
+    rx: '34%',
+    ry: '66%',
     stops: [
       { offset: '0%', color: '#B8E83A', opacity: 0.76 },
-      { offset: '20%', color: '#2DE2C5', opacity: 0.44 },
-      { offset: '44%', color: '#3D6DFF', opacity: 0.3 },
+      { offset: '22%', color: '#2DE2C5', opacity: 0.48 },
+      { offset: '50%', color: '#3D6DFF', opacity: 0.34 },
       { offset: '100%', color: colors.glowDeep, opacity: 0 }
     ]
   },
   {
-    cx: '81%',
-    rx: '24%',
-    ry: '34%',
+    cx: '84%',
+    rx: '30%',
+    ry: '46%',
     stops: [
       { offset: '0%', color: colors.glowCyan, opacity: 0.72 },
-      { offset: '28%', color: '#1A6F8F', opacity: 0.36 },
-      { offset: '58%', color: '#4D7CFF', opacity: 0.28 },
+      { offset: '32%', color: '#1A6F8F', opacity: 0.4 },
+      { offset: '58%', color: '#4D7CFF', opacity: 0.32 },
       { offset: '100%', color: colors.glowDeep, opacity: 0 }
     ]
   }
@@ -173,10 +173,10 @@ function baseBlobStops(strength: number): PeakSpec['stops'] {
   const hot = Math.min(1, strength)
   return [
     { offset: '0%', color: '#FFFFFF', opacity: 1 },
-    { offset: '5%', color: '#FFFFFF', opacity: 0.98 * hot },
-    { offset: '12%', color: '#FAFFDC', opacity: 0.94 * hot },
-    { offset: '24%', color: '#F0FFAA', opacity: 0.8 },
-    { offset: '45%', color: colors.glowLime, opacity: 0.4 },
+    { offset: '6%', color: '#FFFFFF', opacity: 0.98 * hot },
+    { offset: '14%', color: '#FAFFDC', opacity: 0.9 * hot },
+    { offset: '28%', color: '#F0FFAA', opacity: 0.55 },
+    { offset: '52%', color: colors.glowLime, opacity: 0.22 },
     { offset: '100%', color: colors.glowDeep, opacity: 0 }
   ]
 }
@@ -184,57 +184,57 @@ function baseBlobStops(strength: number): PeakSpec['stops'] {
 /** Soft rounded caps where each front curtain meets the bottom edge. */
 const FRONT_BASE_BLOBS: BaseBlobSpec[] = [
   {
-    cx: '6%',
-    cy: '100.5%',
-    fx: '6%',
-    fy: '101.5%',
-    rx: '17%',
-    ry: '17%',
+    cx: '9%',
+    cy: '101.5%',
+    fx: '9%',
+    fy: '102.8%',
+    rx: '18%',
+    ry: '12%',
     stops: baseBlobStops(0.92)
   },
   {
-    cx: '21%',
-    cy: '99%',
-    fx: '21%',
-    fy: '100.8%',
-    rx: '18%',
-    ry: '19%',
+    cx: '23%',
+    cy: '101.2%',
+    fx: '23%',
+    fy: '102.6%',
+    rx: '19%',
+    ry: '12%',
     stops: baseBlobStops(0.98)
   },
   {
-    cx: '36%',
-    cy: '100.8%',
-    fx: '36%',
-    fy: '101.6%',
-    rx: '16%',
-    ry: '16%',
+    cx: '37%',
+    cy: '101.4%',
+    fx: '37%',
+    fy: '102.7%',
+    rx: '17%',
+    ry: '11%',
     stops: baseBlobStops(0.9)
   },
   {
-    cx: '51%',
-    cy: '98.5%',
-    fx: '51%',
-    fy: '100.2%',
-    rx: '19%',
-    ry: '20%',
+    cx: '52%',
+    cy: '101%',
+    fx: '52%',
+    fy: '102.5%',
+    rx: '20%',
+    ry: '13%',
     stops: baseBlobStops(1)
   },
   {
     cx: '66%',
-    cy: '100%',
+    cy: '101.3%',
     fx: '66%',
-    fy: '101.2%',
-    rx: '17%',
-    ry: '18%',
+    fy: '102.7%',
+    rx: '18%',
+    ry: '12%',
     stops: baseBlobStops(0.96)
   },
   {
-    cx: '81%',
-    cy: '99.2%',
-    fx: '81%',
-    fy: '100.6%',
-    rx: '16%',
-    ry: '17%',
+    cx: '84%',
+    cy: '101.2%',
+    fx: '84%',
+    fy: '102.6%',
+    rx: '17%',
+    ry: '11%',
     stops: baseBlobStops(0.91)
   }
 ]
