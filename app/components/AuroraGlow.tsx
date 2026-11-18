@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { View } from 'react-native'
 import { runOnJS, type SharedValue, useAnimatedReaction } from 'react-native-reanimated'
 import { StyleSheet } from 'react-native-unistyles'
+import { TAB_PARALLAX_ORIGIN } from './InsightTabs'
 import { ShadcnAurora } from './background/ShadcnAurora'
 import { AURORA_GAP_ABOVE_DOCK, auroraBottomInset } from './BottomPills'
 import { colors } from '../theme/colors'
@@ -20,7 +21,7 @@ export function AuroraGlow({ progress, safeBottom = 0 }: Props) {
   const bottom = auroraBottomInset(safeBottom)
 
   useAnimatedReaction(
-    () => (progress ? progress.value - 2 : 0),
+    () => (progress ? progress.value - TAB_PARALLAX_ORIGIN : 0),
     value => {
       runOnJS(setDrift)(value)
     },

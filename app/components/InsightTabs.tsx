@@ -11,8 +11,11 @@ import Animated, {
 } from 'react-native-reanimated'
 import { StyleSheet } from 'react-native-unistyles'
 
-export const INSIGHTS = ['Data', 'Sales', 'Overview', 'Support', 'Operations'] as const
+export const INSIGHTS = ['Overview', 'Metrics', 'Workouts', 'Diet'] as const
 export type InsightTab = (typeof INSIGHTS)[number]
+
+/** Tab index used as the neutral point for background / label parallax. */
+export const TAB_PARALLAX_ORIGIN = (INSIGHTS.length - 1) / 2
 
 type TabLayout = { x: number; width: number }
 
