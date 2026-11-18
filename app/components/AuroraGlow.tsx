@@ -9,7 +9,11 @@ import Animated, {
   type SharedValue
 } from 'react-native-reanimated'
 import { StyleSheet } from 'react-native-unistyles'
-import { StaticAuroraBackdrop } from './home/StaticAuroraBackdrop'
+import {
+  auroraTextureHeight,
+  AURORA_TEX_COLUMNS,
+  StaticAuroraBackdrop
+} from './home/StaticAuroraBackdrop'
 import { TAB_PARALLAX_ORIGIN } from './InsightTabs'
 import { AURORA_GAP_ABOVE_DOCK, auroraBottomInset } from './BottomPills'
 import { colors } from '../theme/colors'
@@ -21,7 +25,7 @@ type Props = {
 
 const PANEL_RADIUS = 40
 /** Extra draw width so blur/glow is not clipped at the side edges. */
-const AURORA_H_BLEED = 28
+const AURORA_H_BLEED = 32
 
 /** Multi-peak aurora with slow transform drift (gradients stay static). */
 export function AuroraGlow({ progress, safeBottom = 0 }: Props) {
@@ -84,23 +88,40 @@ export function AuroraGlow({ progress, safeBottom = 0 }: Props) {
           style={StyleSheet.absoluteFillObject}
         />
 
-        {size.width > 0 && (
-          <Animated.View
-            style={[
-              styles.glow,
-              glowMotion,
-              {
-                left: -AURORA_H_BLEED,
-                width: size.width + AURORA_H_BLEED * 2
-              }
-            ]}
-          >
-            <StaticAuroraBackdrop
-              width={size.width + AURORA_H_BLEED * 2}
-              height={size.height}
-            />
-          </Animated.View>
-        )}
+        {size.width > 0 && (() => {
+          const drawW = size.width + AURORA_H_BLEED * 2
+          const texH = auroraTextureHeight(drawW, size.height)
+          const scaleX = drawW / AURORA_TEX_COLUMNS
+          const scaleY = size.height / texH
+          return (
+            <Animated.View
+              pointerEvents="none"
+              style={[
+                styles.glowClip,
+                { width: drawW, height: size.height, left: -AURORA_H_BLEED }
+              ]}
+            >
+              <View
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  top: 0,
+                  width: AURORA_TEX_COLUMNS,
+                  height: texH,
+                  transformOrigin: 'top left',
+                  transform: [{ scaleX }, { scaleY }]
+                }}
+              >
+                <Animated.View style={[{ width: AURORA_TEX_COLUMNS, height: texH }, glowMotion]}>
+                  <StaticAuroraBackdrop
+                    width={AURORA_TEX_COLUMNS}
+                    height={texH}
+                  />
+                </Animated.View>
+              </View>
+            </Animated.View>
+          )
+        })()}
 
         <LinearGradient
           pointerEvents="none"
@@ -130,7 +151,9 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     backgroundColor: colors.black
   },
-  glow: {
-    ...StyleSheet.absoluteFillObject
+  glowClip: {
+    position: 'absolute',
+    top: 0,
+    overflow: 'hidden'
   }
 })

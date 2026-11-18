@@ -203,11 +203,6 @@ export function sampleCurtainField(
       glow[k] += c.light[k] * a
     }
   }
-  const foot = oklabToLinear(hexToOklab('#F2FF8E'))
-  const bottomBand = Math.exp(-Math.pow((1 - y) / 0.11, 2))
-  for (let k = 0; k < 3; k++) {
-    glow[k] += foot[k] * bottomBand * 0.65
-  }
   return bg.map((v, k) => v + glow[k] * o.intensity * 0.7) as unknown as Lab
 }
 

@@ -17,33 +17,33 @@ import {
 type Props = {
   width: number
   height: number
-  /** Shader phase (uibrik clock); slow drift optional. */
   time?: number
 }
 
-const COLUMN_COUNT = 56
-const MERGE_BLUR = 42
-const GLOW_BLUR = 26
+/** Render width in px — upscaled in `AuroraGlow` (uibrik CSS fallback). */
+export const AURORA_TEX_COLUMNS = 52
+
+/** Target height for texture; clamp so columns stay visible after upscale. */
+export function auroraTextureHeight(panelW: number, panelH: number) {
+  return Math.max(64, Math.min(120, Math.round(AURORA_TEX_COLUMNS * (panelH / panelW))))
+}
+
+/** Very light touch — heavy σ at panel size collapses peaks to one slab. */
+const SOFTEN_BLUR = 1.8
 
 function buildColumns(
-  width: number,
-  height: number,
-  base: CurtainFieldOptions,
-  intensityScale: number
+  texW: number,
+  texH: number,
+  base: CurtainFieldOptions
 ) {
-  const aspect = width / height
-  const colW = width / COLUMN_COUNT
-  const opts = { ...base, intensity: base.intensity * intensityScale }
+  const aspect = texW / texH
+  const colW = texW / AURORA_TEX_COLUMNS
+  const count = AURORA_TEX_COLUMNS
 
-  return Array.from({ length: COLUMN_COUNT }, (_, i) => {
-    const stops = columnStops(i, COLUMN_COUNT, aspect, opts)
-    const id = `auroraCol${intensityScale > 1 ? 'Glow' : 'Main'}${i}`
-    return {
-      id,
-      x: i * colW,
-      w: colW + 1.5,
-      stops
-    }
+  return Array.from({ length: count }, (_, i) => {
+    const stops = columnStops(i, count, aspect, base)
+    const id = `auroraCol${i}`
+    return { id, x: i * colW, w: colW + 0.25, stops }
   })
 }
 
@@ -56,13 +56,8 @@ export function StaticAuroraBackdrop({ width, height, time }: Props) {
     [time]
   )
 
-  const mainCols = useMemo(
-    () => (width > 0 && height > 0 ? buildColumns(width, height, o, 1) : []),
-    [width, height, o]
-  )
-
-  const glowCols = useMemo(
-    () => (width > 0 && height > 0 ? buildColumns(width, height, o, 1.35) : []),
+  const cols = useMemo(
+    () => (width > 0 && height > 0 ? buildColumns(width, height, o) : []),
     [width, height, o]
   )
 
@@ -71,32 +66,10 @@ export function StaticAuroraBackdrop({ width, height, time }: Props) {
   return (
     <Svg width={width} height={height}>
       <Defs>
-        <Filter id="auroraMerge" x="-20%" y="-15%" width="140%" height="135%">
-          <FeGaussianBlur in="SourceGraphic" stdDeviation={MERGE_BLUR} />
+        <Filter id="auroraSoft" x="-8%" y="-6%" width="116%" height="112%">
+          <FeGaussianBlur in="SourceGraphic" stdDeviation={SOFTEN_BLUR} />
         </Filter>
-        <Filter id="auroraGlowPass" x="-25%" y="-20%" width="150%" height="140%">
-          <FeGaussianBlur in="SourceGraphic" stdDeviation={GLOW_BLUR} />
-        </Filter>
-        {mainCols.map(col => (
-          <LinearGradient
-            key={col.id}
-            id={col.id}
-            x1="0%"
-            y1="0%"
-            x2="0%"
-            y2="100%"
-          >
-            {col.stops.map((stop, i) => (
-              <Stop
-                key={i}
-                offset={stop.offset}
-                stopColor={stop.color}
-                stopOpacity={1}
-              />
-            ))}
-          </LinearGradient>
-        ))}
-        {glowCols.map(col => (
+        {cols.map(col => (
           <LinearGradient
             key={col.id}
             id={col.id}
@@ -117,23 +90,10 @@ export function StaticAuroraBackdrop({ width, height, time }: Props) {
         ))}
       </Defs>
 
-      <G filter="url(#auroraMerge)" opacity={1}>
-        {mainCols.map(col => (
+      <G filter="url(#auroraSoft)">
+        {cols.map(col => (
           <Rect
-            key={`r-${col.id}`}
-            x={col.x}
-            y={0}
-            width={col.w}
-            height={height}
-            fill={`url(#${col.id})`}
-          />
-        ))}
-      </G>
-
-      <G filter="url(#auroraGlowPass)" opacity={0.52}>
-        {glowCols.map(col => (
-          <Rect
-            key={`g-${col.id}`}
+            key={col.id}
             x={col.x}
             y={0}
             width={col.w}
