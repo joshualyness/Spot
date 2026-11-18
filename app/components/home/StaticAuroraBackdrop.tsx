@@ -92,8 +92,74 @@ const FLOOR: PeakSpec = {
   ]
 }
 
-/** Brighter additive pass (front layer). */
-const FRONT_PEAK_IDS = [2, 3, 4] as const
+/** Brighter front pass — 6 curtains with strong height spread. */
+const FRONT_PEAKS: PeakSpec[] = [
+  {
+    cx: '9%',
+    rx: '30%',
+    ry: '42%',
+    stops: [
+      { offset: '0%', color: '#D6FF4B', opacity: 0.78 },
+      { offset: '28%', color: colors.glowCyan, opacity: 0.45 },
+      { offset: '100%', color: colors.glowDeep, opacity: 0 }
+    ]
+  },
+  {
+    cx: '23%',
+    rx: '32%',
+    ry: '74%',
+    stops: [
+      { offset: '0%', color: '#C8F543', opacity: 0.82 },
+      { offset: '20%', color: colors.glowCyan, opacity: 0.55 },
+      { offset: '45%', color: colors.glowTeal, opacity: 0.32 },
+      { offset: '100%', color: colors.glowDeep, opacity: 0 }
+    ]
+  },
+  {
+    cx: '37%',
+    rx: '28%',
+    ry: '48%',
+    stops: [
+      { offset: '0%', color: colors.glowLime, opacity: 0.7 },
+      { offset: '35%', color: '#1E9E8F', opacity: 0.38 },
+      { offset: '100%', color: colors.glowDeep, opacity: 0 }
+    ]
+  },
+  {
+    cx: '52%',
+    rx: '42%',
+    ry: '88%',
+    stops: [
+      { offset: '0%', color: colors.glowLime, opacity: 0.9 },
+      { offset: '12%', color: colors.glowCyan, opacity: 0.68 },
+      { offset: '30%', color: colors.glowTeal, opacity: 0.5 },
+      { offset: '55%', color: '#3568E8', opacity: 0.38 },
+      { offset: '100%', color: colors.glowDeep, opacity: 0 }
+    ]
+  },
+  {
+    cx: '66%',
+    rx: '34%',
+    ry: '66%',
+    stops: [
+      { offset: '0%', color: '#B8E83A', opacity: 0.76 },
+      { offset: '22%', color: '#2DE2C5', opacity: 0.48 },
+      { offset: '50%', color: '#3D6DFF', opacity: 0.34 },
+      { offset: '100%', color: colors.glowDeep, opacity: 0 }
+    ]
+  },
+  {
+    cx: '84%',
+    rx: '30%',
+    ry: '46%',
+    stops: [
+      { offset: '0%', color: colors.glowCyan, opacity: 0.72 },
+      { offset: '32%', color: '#1A6F8F', opacity: 0.4 },
+      { offset: '58%', color: '#4D7CFF', opacity: 0.32 },
+      { offset: '100%', color: colors.glowDeep, opacity: 0 }
+    ]
+  }
+]
 
 const BACK_BLUR = 10
 /** Front blur is 30% softer than back (smaller stdDeviation). */
@@ -141,6 +207,25 @@ export function StaticAuroraBackdrop({ width, height }: Props) {
             ))}
           </RadialGradient>
         ))}
+        {FRONT_PEAKS.map((peak, index) => (
+          <RadialGradient
+            key={`front-peak-${index}`}
+            id={`auroraFrontPeak${index}`}
+            cx={peak.cx}
+            cy="100%"
+            rx={peak.rx}
+            ry={peak.ry}
+          >
+            {peak.stops.map((stop, i) => (
+              <Stop
+                key={i}
+                offset={stop.offset}
+                stopColor={stop.color}
+                stopOpacity={stop.opacity}
+              />
+            ))}
+          </RadialGradient>
+        ))}
       </Defs>
 
       <G filter="url(#auroraBack)" opacity={0.96}>
@@ -154,13 +239,13 @@ export function StaticAuroraBackdrop({ width, height }: Props) {
         ))}
       </G>
 
-      <G filter="url(#auroraFront)" opacity={0.62}>
-        {FRONT_PEAK_IDS.map(index => (
+      <G filter="url(#auroraFront)" opacity={0.58}>
+        {FRONT_PEAKS.map((_, index) => (
           <Rect
             key={`front-${index}`}
             width={width}
             height={height}
-            fill={`url(#auroraPeak${index})`}
+            fill={`url(#auroraFrontPeak${index})`}
           />
         ))}
       </G>
