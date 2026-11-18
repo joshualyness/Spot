@@ -61,12 +61,12 @@ const BACK_WASHES: Peak[] = [
   }
 ]
 
-/** Bottom-anchored teal columns — reach ~62% up the panel (center tallest). */
+/** Bottom-anchored teal columns — median ~52%, spread ±20% (≈41–62%). */
 const CURTAINS: Peak[] = [
   {
     cx: '10%',
     rx: '15%',
-    ry: '50%',
+    ry: '41%',
     stops: [
       { offset: '0%', color: '#3BE8D8', opacity: 0.88 },
       { offset: '18%', color: '#2DE2C5', opacity: 0.68 },
@@ -77,7 +77,7 @@ const CURTAINS: Peak[] = [
   {
     cx: '27%',
     rx: '17%',
-    ry: '56%',
+    ry: '60%',
     stops: [
       { offset: '0%', color: '#4AF0E4', opacity: 0.92 },
       { offset: '12%', color: '#2DE2C5', opacity: 0.78 },
@@ -88,7 +88,7 @@ const CURTAINS: Peak[] = [
   {
     cx: '44%',
     rx: '14%',
-    ry: '47%',
+    ry: '44%',
     stops: [
       { offset: '0%', color: '#2DE2C5', opacity: 0.82 },
       { offset: '35%', color: '#1A6FA8', opacity: 0.24 },
@@ -110,7 +110,7 @@ const CURTAINS: Peak[] = [
   {
     cx: '68%',
     rx: '16%',
-    ry: '53%',
+    ry: '57%',
     stops: [
       { offset: '0%', color: '#36E8DC', opacity: 0.9 },
       { offset: '22%', color: '#22C8E8', opacity: 0.48 },
@@ -120,7 +120,7 @@ const CURTAINS: Peak[] = [
   {
     cx: '90%',
     rx: '17%',
-    ry: '40%',
+    ry: '48%',
     stops: [
       { offset: '0%', color: '#2DE2C5', opacity: 0.84 },
       { offset: '28%', color: '#1A88BE', opacity: 0.32 },
