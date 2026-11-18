@@ -3,6 +3,7 @@ import Svg, {
   FeGaussianBlur,
   Filter,
   G,
+  LinearGradient,
   RadialGradient,
   Rect,
   Stop
@@ -24,37 +25,37 @@ type Peak = {
   stops: { offset: string; color: string; opacity: number }[]
 }
 
-/** Deep indigo pools — low opacity, wide, high on the panel. */
+/** Indigo undertone — bottom only, behind curtains (not a full-height blue wash). */
 const BACK_WASHES: Peak[] = [
   {
     cx: '22%',
-    cy: '48%',
+    cy: '97%',
+    rx: '48%',
+    ry: '34%',
+    stops: [
+      { offset: '0%', color: '#1A2A5C', opacity: 0.42 },
+      { offset: '40%', color: '#1E3D8A', opacity: 0.16 },
+      { offset: '100%', color: colors.glowDeep, opacity: 0 }
+    ]
+  },
+  {
+    cx: '52%',
+    cy: '96%',
     rx: '58%',
-    ry: '52%',
+    ry: '36%',
     stops: [
-      { offset: '0%', color: '#1A2A5C', opacity: 0.5 },
-      { offset: '45%', color: '#1E3D8A', opacity: 0.22 },
+      { offset: '0%', color: '#243B8F', opacity: 0.36 },
+      { offset: '38%', color: '#2A4FB5', opacity: 0.14 },
       { offset: '100%', color: colors.glowDeep, opacity: 0 }
     ]
   },
   {
-    cx: '55%',
-    cy: '42%',
-    rx: '68%',
-    ry: '58%',
+    cx: '80%',
+    cy: '97%',
+    rx: '46%',
+    ry: '32%',
     stops: [
-      { offset: '0%', color: '#243B8F', opacity: 0.38 },
-      { offset: '40%', color: '#2A4FB5', opacity: 0.18 },
-      { offset: '100%', color: colors.glowDeep, opacity: 0 }
-    ]
-  },
-  {
-    cx: '82%',
-    cy: '52%',
-    rx: '52%',
-    ry: '48%',
-    stops: [
-      { offset: '0%', color: '#142848', opacity: 0.45 },
+      { offset: '0%', color: '#142848', opacity: 0.38 },
       { offset: '100%', color: colors.glowDeep, opacity: 0 }
     ]
   }
@@ -194,9 +195,14 @@ export function StaticAuroraBackdrop({ width, height }: Props) {
           <PeakGradient key={`c${i}`} id={`auroraCurtain${i}`} peak={p} />
         ))}
         <PeakGradient id="auroraFoot" peak={FOOT} />
+        <LinearGradient id="auroraTopFade" x1="0%" y1="0%" x2="0%" y2="100%">
+          <Stop offset="0%" stopColor={colors.black} stopOpacity="0.95" />
+          <Stop offset="36%" stopColor={colors.black} stopOpacity="0.72" />
+          <Stop offset="52%" stopColor={colors.black} stopOpacity="0" />
+        </LinearGradient>
       </Defs>
 
-      <G filter="url(#auroraBack)" opacity={0.82}>
+      <G filter="url(#auroraBack)" opacity={0.68}>
         {BACK_WASHES.map((_, i) => (
           <Rect
             key={`br${i}`}
@@ -221,6 +227,8 @@ export function StaticAuroraBackdrop({ width, height }: Props) {
       <G filter="url(#auroraFoot)" opacity={0.96}>
         <Rect width={width} height={height} fill="url(#auroraFoot)" />
       </G>
+
+      <Rect width={width} height={height} fill="url(#auroraTopFade)" />
     </Svg>
   )
 }
