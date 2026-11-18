@@ -21,6 +21,14 @@ type PeakSpec = {
   stops: readonly { offset: string; color: string; opacity: number }[]
 }
 
+type BaseBlobSpec = PeakSpec & {
+  /** Vertical anchor — % from top; 100% = panel bottom. */
+  cy: string
+  /** Focal point pulls the hot core off a perfect baseline. */
+  fx: string
+  fy: string
+}
+
 /** Bottom-anchored peaks (reference Agentix layout). */
 const PEAKS: PeakSpec[] = [
   {
@@ -162,22 +170,73 @@ const FRONT_PEAKS: PeakSpec[] = [
 ]
 
 function baseBlobStops(strength: number): PeakSpec['stops'] {
+  const hot = Math.min(1, strength)
   return [
-    { offset: '0%', color: '#FFFFFF', opacity: 0.98 * strength },
-    { offset: '18%', color: '#F0FFAA', opacity: 0.82 },
-    { offset: '42%', color: colors.glowLime, opacity: 0.42 },
+    { offset: '0%', color: '#FFFFFF', opacity: 1 },
+    { offset: '5%', color: '#FFFFFF', opacity: 0.98 * hot },
+    { offset: '12%', color: '#FAFFDC', opacity: 0.94 * hot },
+    { offset: '24%', color: '#F0FFAA', opacity: 0.8 },
+    { offset: '45%', color: colors.glowLime, opacity: 0.4 },
     { offset: '100%', color: colors.glowDeep, opacity: 0 }
   ]
 }
 
 /** Soft rounded caps where each front curtain meets the bottom edge. */
-const FRONT_BASE_BLOBS: PeakSpec[] = [
-  { cx: '9%', rx: '22%', ry: '24%', stops: baseBlobStops(0.9) },
-  { cx: '23%', rx: '24%', ry: '26%', stops: baseBlobStops(0.95) },
-  { cx: '37%', rx: '21%', ry: '23%', stops: baseBlobStops(0.92) },
-  { cx: '52%', rx: '26%', ry: '28%', stops: baseBlobStops(1) },
-  { cx: '66%', rx: '23%', ry: '25%', stops: baseBlobStops(0.94) },
-  { cx: '84%', rx: '22%', ry: '24%', stops: baseBlobStops(0.9) }
+const FRONT_BASE_BLOBS: BaseBlobSpec[] = [
+  {
+    cx: '9%',
+    cy: '99.5%',
+    fx: '9%',
+    fy: '100.8%',
+    rx: '19%',
+    ry: '22%',
+    stops: baseBlobStops(0.92)
+  },
+  {
+    cx: '23%',
+    cy: '96%',
+    fx: '23.5%',
+    fy: '98.5%',
+    rx: '21%',
+    ry: '27%',
+    stops: baseBlobStops(0.98)
+  },
+  {
+    cx: '37%',
+    cy: '100%',
+    fx: '37%',
+    fy: '101.2%',
+    rx: '18%',
+    ry: '21%',
+    stops: baseBlobStops(0.9)
+  },
+  {
+    cx: '52%',
+    cy: '94%',
+    fx: '52%',
+    fy: '96.5%',
+    rx: '22%',
+    ry: '30%',
+    stops: baseBlobStops(1)
+  },
+  {
+    cx: '66%',
+    cy: '98%',
+    fx: '65.5%',
+    fy: '100%',
+    rx: '20%',
+    ry: '24%',
+    stops: baseBlobStops(0.96)
+  },
+  {
+    cx: '84%',
+    cy: '97%',
+    fx: '84%',
+    fy: '99%',
+    rx: '18%',
+    ry: '23%',
+    stops: baseBlobStops(0.91)
+  }
 ]
 
 const BACK_BLUR = 10
@@ -255,7 +314,9 @@ export function StaticAuroraBackdrop({ width, height }: Props) {
             key={`front-base-${index}`}
             id={`auroraFrontBase${index}`}
             cx={peak.cx}
-            cy="100%"
+            cy={peak.cy}
+            fx={peak.fx}
+            fy={peak.fy}
             rx={peak.rx}
             ry={peak.ry}
           >
@@ -293,7 +354,7 @@ export function StaticAuroraBackdrop({ width, height }: Props) {
         ))}
       </G>
 
-      <G filter="url(#auroraFrontBase)" opacity={0.88}>
+      <G filter="url(#auroraFrontBase)" opacity={0.93}>
         {FRONT_BASE_BLOBS.map((_, index) => (
           <Rect
             key={`front-base-${index}`}
