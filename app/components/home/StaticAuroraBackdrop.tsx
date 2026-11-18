@@ -101,7 +101,7 @@ export function StaticAuroraBackdrop({ width, height }: Props) {
     <Svg width={width} height={height}>
       <Defs>
         <Filter id="auroraSoft" x="-35%" y="-35%" width="170%" height="170%">
-          <FeGaussianBlur in="SourceGraphic" stdDeviation="15" />
+          <FeGaussianBlur in="SourceGraphic" stdDeviation="10" />
         </Filter>
         <RadialGradient id="auroraCenterShade" cx="50%" cy="38%" rx="58%" ry="52%">
           <Stop offset="0%" stopColor={colors.black} stopOpacity="0.72" />
