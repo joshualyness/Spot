@@ -120,7 +120,7 @@ const CURTAINS: Peak[] = [
   {
     cx: '90%',
     rx: '17%',
-    ry: '48%',
+    ry: '42%',
     stops: [
       { offset: '0%', color: '#2DE2C5', opacity: 0.84 },
       { offset: '28%', color: '#1A88BE', opacity: 0.32 },
@@ -129,26 +129,92 @@ const CURTAINS: Peak[] = [
   }
 ]
 
-const FOOT: Peak = {
-  cx: '50%',
-  cy: '102%',
-  fx: '50%',
-  fy: '104%',
-  rx: '116%',
-  ry: '15%',
-  stops: [
+function footStops(hot: number): Peak['stops'] {
+  const h = Math.min(1, hot)
+  return [
     { offset: '0%', color: '#FFFFFF', opacity: 1 },
-    { offset: '7%', color: '#FAFFCC', opacity: 0.96 },
-    { offset: '18%', color: '#E8FF5A', opacity: 0.9 },
-    { offset: '35%', color: '#D6FF4B', opacity: 0.78 },
-    { offset: '55%', color: '#8AE8C8', opacity: 0.4 },
+    { offset: '3%', color: '#FFFFFF', opacity: 0.99 * h },
+    { offset: '8%', color: '#FFFFEE', opacity: 0.97 * h },
+    { offset: '16%', color: '#F6FF99', opacity: 0.92 * h },
+    { offset: '28%', color: '#E8FF5A', opacity: 0.82 * h },
+    { offset: '45%', color: '#D6FF4B', opacity: 0.62 * h },
+    { offset: '68%', color: '#6AE8B8', opacity: 0.28 },
     { offset: '100%', color: colors.glowDeep, opacity: 0 }
   ]
 }
 
+/** Full-width tray — merges caps into one contiguous lime band when blurred. */
+const FOOT_BASE: Peak = {
+  cx: '50%',
+  cy: '103%',
+  fx: '50%',
+  fy: '105.5%',
+  rx: '124%',
+  ry: '22%',
+  stops: footStops(1)
+}
+
+/** Wavy foot — different vertical reach per column (height variation along width). */
+const FOOT_CAPS: Peak[] = [
+  {
+    cx: '10%',
+    cy: '101.2%',
+    fx: '10%',
+    fy: '103.2%',
+    rx: '24%',
+    ry: '13%',
+    stops: footStops(0.9)
+  },
+  {
+    cx: '27%',
+    cy: '101.9%',
+    fx: '27%',
+    fy: '103.8%',
+    rx: '26%',
+    ry: '20%',
+    stops: footStops(0.96)
+  },
+  {
+    cx: '44%',
+    cy: '101%',
+    fx: '44%',
+    fy: '102.8%',
+    rx: '22%',
+    ry: '11%',
+    stops: footStops(0.88)
+  },
+  {
+    cx: '52%',
+    cy: '101.7%',
+    fx: '52%',
+    fy: '104%',
+    rx: '28%',
+    ry: '24%',
+    stops: footStops(1)
+  },
+  {
+    cx: '68%',
+    cy: '101.4%',
+    fx: '68%',
+    fy: '103.5%',
+    rx: '25%',
+    ry: '17%',
+    stops: footStops(0.94)
+  },
+  {
+    cx: '90%',
+    cy: '101.1%',
+    fx: '90%',
+    fy: '103%',
+    rx: '23%',
+    ry: '12%',
+    stops: footStops(0.89)
+  }
+]
+
 const BACK_BLUR = 11
 const CURTAIN_BLUR = 7
-const FOOT_BLUR = 18
+const FOOT_BLUR = 28
 
 function PeakGradient({ id, peak }: { id: string; peak: Peak }) {
   return (
@@ -185,7 +251,7 @@ export function StaticAuroraBackdrop({ width, height }: Props) {
         <Filter id="auroraCurtain" x="-45%" y="-32%" width="190%" height="165%">
           <FeGaussianBlur in="SourceGraphic" stdDeviation={CURTAIN_BLUR} />
         </Filter>
-        <Filter id="auroraFoot" x="-50%" y="-25%" width="200%" height="150%">
+        <Filter id="auroraFoot" x="-55%" y="-35%" width="210%" height="175%">
           <FeGaussianBlur in="SourceGraphic" stdDeviation={FOOT_BLUR} />
         </Filter>
         {BACK_WASHES.map((p, i) => (
@@ -194,7 +260,10 @@ export function StaticAuroraBackdrop({ width, height }: Props) {
         {CURTAINS.map((p, i) => (
           <PeakGradient key={`c${i}`} id={`auroraCurtain${i}`} peak={p} />
         ))}
-        <PeakGradient id="auroraFoot" peak={FOOT} />
+        <PeakGradient id="auroraFootBase" peak={FOOT_BASE} />
+        {FOOT_CAPS.map((p, i) => (
+          <PeakGradient key={`f${i}`} id={`auroraFootCap${i}`} peak={p} />
+        ))}
         <LinearGradient id="auroraTopFade" x1="0%" y1="0%" x2="0%" y2="100%">
           <Stop offset="0%" stopColor={colors.black} stopOpacity="0.95" />
           <Stop offset="36%" stopColor={colors.black} stopOpacity="0.72" />
@@ -224,8 +293,16 @@ export function StaticAuroraBackdrop({ width, height }: Props) {
         ))}
       </G>
 
-      <G filter="url(#auroraFoot)" opacity={0.96}>
-        <Rect width={width} height={height} fill="url(#auroraFoot)" />
+      <G filter="url(#auroraFoot)" opacity={0.98}>
+        <Rect width={width} height={height} fill="url(#auroraFootBase)" />
+        {FOOT_CAPS.map((_, i) => (
+          <Rect
+            key={`foot-${i}`}
+            width={width}
+            height={height}
+            fill={`url(#auroraFootCap${i})`}
+          />
+        ))}
       </G>
 
       <Rect width={width} height={height} fill="url(#auroraTopFade)" />
