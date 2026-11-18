@@ -44,8 +44,8 @@ export function AuroraNativeBackground({
   useEffect(() => {
     if (layout.width === 0) return
 
-    const renderW = Math.min(200, Math.round(layout.width))
-    const renderH = Math.max(48, Math.round((layout.height / layout.width) * renderW))
+    const renderW = Math.min(420, Math.max(120, Math.round(layout.width)))
+    const renderH = Math.max(80, Math.round((layout.height / layout.width) * renderW))
 
     let alive = true
     let last = 0
@@ -59,7 +59,7 @@ export function AuroraNativeBackground({
           base: '#000000',
           dark: true,
           intensity: params.intensity,
-          height: params.height - drift * 0.02,
+          height: params.height - drift * 0.015,
           spread: params.spread,
           layers: params.layers,
           waviness: params.waviness,
@@ -84,7 +84,7 @@ export function AuroraNativeBackground({
 
   return (
     <View style={styles.root} onLayout={onLayout}>
-      {uri ? <Image source={{ uri }} style={styles.image} contentFit="cover" transition={0} /> : null}
+      {uri ? <Image source={{ uri }} style={styles.image} contentFit="fill" transition={0} /> : null}
     </View>
   )
 }

@@ -147,8 +147,9 @@ export function renderUibrikAuroraFrame(o: UibrikAuroraOptions): Uint8Array {
   const layers = Math.min(o.layers, MAX_LAYERS)
   const px = new Uint8Array(W * H * 3)
 
+  const xSpan = Math.max(aspect, 1)
   for (let cx = 0; cx < W; cx++) {
-    const x = ((cx + 0.5) / W) * aspect
+    const x = ((cx + 0.5) / W) * xSpan
     const xs = x / o.stretch
     const curtains: { y0: number; strength: number; light: Lab; reach: number }[] = []
     for (let i = 0; i < MAX_LAYERS; i++) {
@@ -228,11 +229,12 @@ export function shadcnDemoParams(input: {
   const scale = input.scale ?? 0.55
   return {
     intensity: input.intensity ?? 2,
-    waviness: (input.amplitude ?? 0.15) * 6,
-    stretch: 1 / Math.max(0.25, scale),
+    waviness: (input.amplitude ?? 0.15) * 4,
+    stretch: Math.max(0.35, scale),
     speed: input.speed ?? 0.25,
-    height: 0.38,
-    spread: 0.28,
+    /** Curtain hem — low value anchors light at the bottom edge (0 = bottom, 1 = top). */
+    height: 0.02,
+    spread: 0.4,
     layers: 3
   }
 }
